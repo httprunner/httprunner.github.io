@@ -20,11 +20,11 @@
 <meta property="og:description" content="基于参数提取机制实现响应结果字段提取和参数关联">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/enhance-tests/extract/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-06-02T15:49:36+08:00">
+<meta property="article:modified_time" content="2022-06-03T21:47:03+08:00">
 <meta itemprop=name content="参数提取（extract）">
 <meta itemprop=description content="基于参数提取机制实现响应结果字段提取和参数关联">
-<meta itemprop=dateModified content="2022-06-02T15:49:36+08:00">
-<meta itemprop=wordCount content="67">
+<meta itemprop=dateModified content="2022-06-03T21:47:03+08:00">
+<meta itemprop=wordCount content="0">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="参数提取（extract）">
 <meta name=twitter:description content="基于参数提取机制实现响应结果字段提取和参数关联">
@@ -265,40 +265,6 @@ Versions
 <div class=lead>基于参数提取机制实现响应结果字段提取和参数关联</div>
 <header class=article-meta>
 </header>
-<p>目前，HttpRunner支持多种响应结果字段提取方式：</p>
-<ul>
-<li>若响应结果为 JSON 结构，可采用.运算符的方式，例如headers.Content-Type、content.success；</li>
-<li>若响应结果为 text/html 结构，可采用正则表达式的方式，例如blog-motto">(.*)；</li>
-<li>当参数提取出来后，可采用"$变量名"的方式进行参数引用。</li>
-</ul>
-<p>例如：</p>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>&#34;test&#34;: {
-    &#34;name&#34;: &#34;get token with $user_agent, $os_platform, $app_version&#34;,
-    &#34;request&#34;: {
-        &#34;url&#34;: &#34;/api/get-token&#34;,
-        &#34;method&#34;: &#34;POST&#34;,
-        &#34;headers&#34;: {
-            &#34;app_version&#34;: &#34;$app_version&#34;,
-            &#34;os_platform&#34;: &#34;$os_platform&#34;,
-            &#34;user_agent&#34;: &#34;$user_agent&#34;
-        },
-        &#34;json&#34;: {
-            &#34;sign&#34;: &#34;${get_sign($user_agent, $device_sn, $os_platform, $app_version)}&#34;
-        },
-        &#34;extract&#34;: [
-            {&#34;token&#34;: &#34;content.token&#34;}
-        ],
-        &#34;validate&#34;: [
-            {&#34;eq&#34;: [&#34;status_code&#34;, 200]},
-            {&#34;eq&#34;: [&#34;headers.Content-Type&#34;, &#34;application/json&#34;]},
-            {&#34;eq&#34;: [&#34;content.success&#34;, true]}
-        ],
-        &#34;setup_hooks&#34;: [],
-        &#34;teardown_hooks&#34;: []
-    }
-}
-
-</code></pre></div><p>分析：上述例子中，extract是从当前 HTTP 请求的响应结果中提取参数token，并保存到参数变量中（例如token），后续测试用例可通过$token的形式进行引用</p>
 </div>
 </main>
 </div>
