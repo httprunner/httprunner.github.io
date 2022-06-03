@@ -20,11 +20,11 @@
 <meta property="og:description" content="基于变量机制实现参数的生命周期管理">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/enhance-tests/variables/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-02T15:49:36+08:00">
 <meta itemprop=name content="变量（variables）">
 <meta itemprop=description content="基于变量机制实现参数的生命周期管理">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="0">
+<meta itemprop=dateModified content="2022-06-02T15:49:36+08:00">
+<meta itemprop=wordCount content="234">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="变量（variables）">
 <meta name=twitter:description content="基于变量机制实现参数的生命周期管理">
@@ -265,6 +265,125 @@ Versions
 <div class=lead>基于变量机制实现参数的生命周期管理</div>
 <header class=article-meta>
 </header>
+<p>在测试用例内部，HttpRunner 划分了两层变量空间作用域（context）。</p>
+<ul>
+<li>config：作为整个测试用例的全局配置项，作用域为整个测试用例；</li>
+<li>test：测试步骤的变量空间（context）会继承或覆盖 config 中定义的内容；
+<ul>
+<li>若某变量在 config 中定义了，在某 test 中没有定义，则该 test 会继承该变量</li>
+<li>若某变量在 config 和某 test 中都定义了，则该 test 中使用自己定义的变量值</li>
+</ul>
+</li>
+<li>各个测试步骤（test）的变量空间相互独立，互不影响；</li>
+<li>如需在多个测试步骤（test）中传递参数值，则需要使用 extract 关键字，并且只能从前往后传递</li>
+</ul>
+<h4 id=test>test</h4>
+<p>在测试步骤（test)下声明的变量，作用域只在当前测试步骤（test)下有效。
+声明变量用 variables，变量和对应值用键值对。例如：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>   teststeps:
+   -
+       name: step login
+       variables:
+           user: test
+           psw: &#34;123456&#34;
+</code></pre></div><p>在上述例子中 ，variables定义的局部变量，作用域为测试步骤中。</p>
+<h4 id=config>config</h4>
+<p>在config下声明变量(variables)是全局变量，整个测试用例（testcase）的所有地方均可以引用，例如</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>   &#34;config&#34;: {
+       &#34;name&#34;: &#34;testcase description&#34;,
+       &#34;parameters&#34;: [
+           {&#34;user_agent&#34;: [&#34;iOS/10.1&#34;, &#34;iOS/10.2&#34;, &#34;iOS/10.3&#34;]},
+           {&#34;app_version&#34;: &#34;${P(app_version.csv)}&#34;},
+           {&#34;os_platform&#34;: &#34;${get_os_platform()}&#34;}
+       ],
+       &#34;variables&#34;: [
+           {&#34;user_agent&#34;: &#34;iOS/10.3&#34;},
+           {&#34;device_sn&#34;: &#34;${gen_random_string(15)}&#34;},
+           {&#34;os_platform&#34;: &#34;ios&#34;}
+       ],
+       &#34;request&#34;: {
+           &#34;base_url&#34;: &#34;http://127.0.0.1:5000&#34;,
+           &#34;headers&#34;: {
+               &#34;Content-Type&#34;: &#34;application/json&#34;,
+               &#34;device_sn&#34;: &#34;$device_sn&#34;
+           }
+       },
+       &#34;output&#34;: [
+           &#34;token&#34;
+       ]
+   }
+
+</code></pre></div><p>在上述例子中 ，variables定义的全局变量，作用域为整个用例。</p>
+<h4 id=变量优先级>变量优先级</h4>
+<p>原则上，尽可能使用不同的变量名称， 当变量之间出现重复名称时，就需要您了解优先级策略。例如：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>config:
+    name: xxx
+    variables:              # config variables
+        varA: &#34;configA&#34;
+        varB: &#34;configB&#34;
+        varC: &#34;configC&#34;
+    parameters:             # parameter variables
+        varA: [&#34;paramA1&#34;]
+        varB: [&#34;paramB1&#34;]
+
+teststeps:
+-
+    name: step 1
+    variables:              # step variables
+        varA: &#34;step1A&#34;
+    request:
+        url: /$varA/$varB/$varC # varA=&#34;step1A&#34;, varB=&#34;paramB1&#34;, varC=&#34;configC&#34;
+        method: GET
+    extract:                # extracted variables
+        varA: body.data.A   # suppose varA=&#34;extractVarA&#34;
+        varB: body.data.B   # suppose varB=&#34;extractVarB&#34;
+-
+    name: step 2
+    varialbes:
+        varA: &#34;step2A&#34;
+    request:
+        url: /$varA/$varB/$varC # varA=&#34;step2A&#34;, varB=&#34;extractVarB&#34;, varC=&#34;configC&#34;
+        method: GET
+
+</code></pre></div><p>在以上用例中，变量优先级按以下顺序排列：</p>
+<ul>
+<li>
+<p>步骤变量 > 提取变量，例如步骤 2，varA=&ldquo;step2A&rdquo;</p>
+</li>
+<li>
+<p>参数变量 > 配置变量，例如第 1 步，varB=&ldquo;paramB1&rdquo;</p>
+</li>
+<li>
+<p>提取变量 > 参数变量 > 配置变量，例如第 2 步，varB=&ldquo;extractVarB&rdquo;</p>
+</li>
+<li>
+<p>配置变量的优先级最低，例如第 1/2 步，varC=&ldquo;configC&rdquo;</p>
+</li>
+</ul>
+<h4 id=测试套件优先级>测试套件优先级</h4>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>config:
+    name: xxx
+    variables:                  # testsuite config variables
+        varA: &#34;configA&#34;
+        varB: &#34;configB&#34;
+        varC: &#34;configC&#34;
+
+testcases:
+-
+    name: case 1
+    variables:                  # testcase variables
+        varA: &#34;case1A&#34;
+    testcase: /path/to/testcase1
+    export: [&#34;varA&#34;, &#34;varB&#34;]    # export variables
+-
+    name: case 2
+    varialbes:                  # testcase variables
+        varA: &#34;case2A&#34;
+    testcase: /path/to/testcase2
+</code></pre></div><p>在测试套件中，变量优先级按以下顺序排列：</p>
+<ul>
+<li>测试用例变量 > 导出变量 > 测试套件配置变量 > 引用的测试用例配置变量</li>
+</ul>
 </div>
 </main>
 </div>
