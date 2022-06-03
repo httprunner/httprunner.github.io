@@ -25,14 +25,14 @@ Postman Echo 集合的详情页面如下图所示，通过 Create a fork 选项�
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/blog/how-to-convert-postman/"><meta property="article:section" content="blog">
 <meta property="article:published_time" content="2022-05-25T00:00:00+00:00">
-<meta property="article:modified_time" content="2022-05-25T22:13:45+08:00">
+<meta property="article:modified_time" content="2022-06-02T14:30:47+08:00">
 <meta itemprop=name content="HttpRunner v4.0 新增支持 Postman 用例转换">
 <meta itemprop=description content="HttpRunner 从 v4.1.0 开始新增支持 Postman 用例转换功能。Postman 是一款强大、实用且容易上手的接口测试工具，它支持将集合（Collection）导出为 JSON 格式的工程文件，从而可以可以灵活地和其他工具进行协调交互。本文将结合具体案例来介绍使用 HttpRunner 进行 Postman 用例转换的功能。如果使用过程中遇到问题，欢迎在下方评论区留言，我们将根据大家的反馈来进行迭代和优化。
 Postman 工程文件导出 首先，我们基于一个实际的 Postman 项目案例来导出 Postman 的工程文件。在 Postman 的 Explore 界面中可以找到非常多的项目案例，这里我们选择一个 Postman 官方提供的工作空间（Workspace）Published Postman Templates，打开该工作空间后可以看到官方提供了非常多的集合，这里我们选择其中的一个集合 Postman Echo 为例，postman-echo 是一个用来调试 REST 客户端发送请求功能是否正常的服务，具体可以参考 postman-echo 的接口文档。
 Postman Echo 集合的详情页面如下图所示，通过 Create a fork 选项，我们可以将集合复制到自己的工作空间，从而可以进行其他自定义修改。这里我们选择直接通过 Export 选项来将 Postman Echo 集合导出为 JSON 格式的工程文件，具体操作方式如下图所示：
 在随后弹出的导出选项中，我们选择最新版本 Collection v2.1，点击 Export 将 Postman 工程文件导出到本地。
 读者可以按照上述的操作流程自行导出 Postman 工程文件到本地，此处笔者分享下自己导出的工程文件 postman_collection.json，从 JSON 工程文件的形式上可以看出，Postman 导出的工程文件与 HttpRunner 的测试用例有相似之处，都是采用了结构化的方式构建请求样例，不过相比较而言，Postman 的工程文件结构更为复杂。关于该工程文件的详细格式说明和其他细节，感兴趣的读者可以参考 Collection 格式的介绍文档，下面我们来演示从 Postman 到 HttpRunner 的用例转换过程。"><meta itemprop=datePublished content="2022-05-25T00:00:00+00:00">
-<meta itemprop=dateModified content="2022-05-25T22:13:45+08:00">
+<meta itemprop=dateModified content="2022-06-02T14:30:47+08:00">
 <meta itemprop=wordCount content="1067">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="HttpRunner v4.0 新增支持 Postman 用例转换">
@@ -108,7 +108,9 @@ Versions
 <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id=m-blog-li>
 <a href=/blog/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id=m-blog><span>博客</span></a>
 <ul class=ul-1>
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-blogmtsc-2022-opensource-li>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-blogconvert-dev-plan-li>
+<a href=/blog/convert-dev-plan/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-blogconvert-dev-plan><span>HttpRunner v4.0 用例转换功能规划</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-blogmtsc-2022-opensource-li>
 <a href=/blog/mtsc-2022-opensource/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-blogmtsc-2022-opensource><span>【MTSC 2022 年度开源项目评选】HttpRunner 期待你的支持</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child active-path" id=m-bloghow-to-convert-postman-li>
 <a href=/blog/how-to-convert-postman/ class="align-left pl-0 active td-sidebar-link td-sidebar-link__page" id=m-bloghow-to-convert-postman><span class=td-sidebar-nav-active-item>HttpRunner v4.0 新增支持 Postman 用例转换</span></a>
@@ -167,7 +169,7 @@ Versions
 <p>使用过 HttpRunner v4.0 的读者可能对 <code>hrp har2case</code> 指令不陌生，不过随着后续支持的输入类型越来越多，HttpRunner 的转换功能将不仅仅局限于支持 Postman、Swagger 等工具导出的工程文件到 HttpRunner 测试用例的转换，还会扩展支持 curl、Apach ab 等指令到测试用例的转换，甚至是会支持测试用例的不同形态之间的相互转换，横向的拓展势必会导致指令冗余以及用户的学习成本增加。因此，HttpRunner 之后的用例转换功能将集中在 <code>hrp convert</code> 一个指令中，不过仍然兼容之前版本中 <code>hrp har2case</code> 的操作，详细规划将在下一期文章《HttpRunner v4.0 用例转换功能规划》中介绍，敬请期待。与 <code>hrp har2case</code> 类似，通过 <code>hrp convert</code> 可以一次性转换一或多个 Postman 工程文件，单个 Postman 工程文件经过转换会生成对应的单个 JSON/YAML 脚本。下面介绍如何使用 <code>hrp convert</code> 指令来进行 Postman 用例转换。</p>
 <p>首先介绍 <code>hrp convert</code> 各个选项的详细说明：</p>
 <ol>
-<li><code>--to-json/--to-yaml/--to-gotest/--to-pytest</code> 用于将输入转化为对应形态的测试用例，四个选项中最多只能指定一个，如果不指定则默认会将输入转化为 JSON 形态的测试用例。当前已经支持将 Postman 用例转换为 JSON/YAML/pytest 三种形态形态的测试用例</li>
+<li><code>--to-json/--to-yaml/--to-gotest/--to-pytest</code> 用于将输入转化为对应形态的测试用例，四个选项中最多只能指定一个，如果不指定则默认会将输入转化为 JSON 形态的测试用例。当前已经支持将 Postman 用例转换为 JSON/YAML/pytest 三种形态的测试用例</li>
 <li><code>--output-dir</code> 后接测试用例的期望输出目录的路径，用于将转换生成的测试用例输出到对应的文件夹，需要注意该路径必须是存在且合法的</li>
 <li><code>--profile</code> 后接 profile 配置文件的路径，profile 文件的后缀可以为 .json/.yaml/.yml，目前支持修改输入中的 Headers 和 Cookies 信息，并且支持替换（不存在则会创建）以及覆盖两种修改模式，下面给出这两种修改模式的 profile 配置文件示例：</li>
 </ol>
