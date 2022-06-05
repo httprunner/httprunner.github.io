@@ -1,4 +1,18 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>HttpRunner – HttpRunner</title><link>https://httprunner.com/</link><description>Recent content on HttpRunner</description><generator>Hugo -- gohugo.io</generator><atom:link href="https://httprunner.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: HttpRunner v4.0 用例转换功能介绍</title><link>https://httprunner.com/blog/hrp-convert-intro/</link><pubDate>Thu, 02 Jun 2022 00:00:00 +0000</pubDate><guid>https://httprunner.com/blog/hrp-convert-intro/</guid><description>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>HttpRunner – HttpRunner</title><link>https://httprunner.com/</link><description>Recent content on HttpRunner</description><generator>Hugo -- gohugo.io</generator><atom:link href="https://httprunner.com/index.xml" rel="self" type="application/rss+xml"/><item><title>Blog: HttpRunner v4 用户交流群，它来啦！</title><link>https://httprunner.com/blog/join-chat-group/</link><pubDate>Sun, 05 Jun 2022 00:00:00 +0000</pubDate><guid>https://httprunner.com/blog/join-chat-group/</guid><description>
+&lt;p>HttpRunner 为用户开放了多种交流渠道，大家在遇到问题后，我们建议大家最好是在 HttpRunner 的 &lt;a href="https://github.com/httprunner/httprunner/discussions">GitHub Discussions&lt;/a> 或者 &lt;a href="https://testerhome.com/topics/node138">TesterHome 社区&lt;/a>发帖，因为可以将问题和解答进行沉淀，方便后续用户搜索查看。&lt;/p>
+&lt;p>不过，考虑到很多用户更习惯使用微信群进行交流，在 HttpRunner 公众号后台问得最多的也是如何加群的问题，我们终于还是妥协了 o(╯□╰)o&lt;/p>
+&lt;p>HttpRunner 用户交流群，它来啦！！！&lt;/p>
+&lt;p>加群方式：在 &lt;a href="https://httprunner.com/image/qrcode.jpg">HttpRunner 公众号&lt;/a>发送「飞书群」或者「微信群」，即可获得群二维码。&lt;/p>
+&lt;p>推荐使用飞书群，因为加群后可以看到所有历史交流记录；交流效率方面也远超微信群，体验过后就知道了。&lt;/p>
+&lt;p>这里也事先申明几点注意事项：&lt;/p>
+&lt;ul>
+&lt;li>交流群仅限 HttpRunner 技术交流，杜绝任意形式的营销、广告等信息；一经发现，发言人及其邀请人将直接移出群聊；&lt;/li>
+&lt;li>交流群中会不定期 @所有人 推送 HttpRunner 相关信息；&lt;/li>
+&lt;li>所有的群都是一样的，大家只需要加一个群就可以了；如果之前已经加过了其它 HttpRunner 交流群，就不用再加入了，避免重复打扰。&lt;/li>
+&lt;/ul>
+&lt;p>另外，我们还推出了针对企业用户的 VIP 专属微信（飞书）交流群，所有 HttpRunner 相关的问题都可以得到 HttpRunner 核心开发者的高优响应和一对一技术支持。&lt;/p>
+&lt;p>该服务除了面向商业付费客户开放外，当前也面向愿意为 HttpRunner 贡献成功案例的企业客户。&lt;/p>
+&lt;p>具体方式也很简单，我们已经提供了案例模板和 2 个示例，感兴趣的同学可以通过&lt;a href="https://httprunner.com/docs/cases/">链接&lt;/a>进行查看。&lt;/p></description></item><item><title>Blog: HttpRunner v4.0 用例转换功能介绍</title><link>https://httprunner.com/blog/hrp-convert-intro/</link><pubDate>Thu, 02 Jun 2022 00:00:00 +0000</pubDate><guid>https://httprunner.com/blog/hrp-convert-intro/</guid><description>
 &lt;h2 id="引言">引言&lt;/h2>
 &lt;p>使用过 HttpRunner v3.0 的用户应该对 &lt;code>httprunner har2case&lt;/code> 和 &lt;code>httprunner make&lt;/code> 指令不陌生，这两个指令可以非常方便地进行测试用例的生成与转换，前者用于将 HAR 包转换为 JSON/YAML/pytest 测试用例，后者则用于将 JSON/YAML 测试用例转换为 pytest 形态。&lt;/p>
 &lt;p>在 v4.0 版本中，HttpRunner 将实现一套更为灵活的测试用例转换机制，并且将所有的转换功能都集中在 &lt;code>hrp convert&lt;/code> 一个指令中。用户可以通过指定选项将将输入转换为各种类型的测试用例，HttpRunner 的转换功能将不仅仅局限于支持 Postman、Swagger 等工具导出的工程文件到 HttpRunner 测试用例的转换，还会支持 curl、Apache ab 等指令到测试用例的转换，甚至是会支持测试用例的不同形态之间的相互转换。&lt;/p>
