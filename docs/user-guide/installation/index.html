@@ -20,11 +20,11 @@
 <meta property="og:description" content="HttpRunner 的几种安装方式">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/installation/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-11T16:33:18+08:00">
+<meta property="article:modified_time" content="2022-06-05T10:28:41+08:00">
 <meta itemprop=name content="安装说明">
 <meta itemprop=description content="HttpRunner 的几种安装方式">
-<meta itemprop=dateModified content="2022-05-11T16:33:18+08:00">
-<meta itemprop=wordCount content="526">
+<meta itemprop=dateModified content="2022-06-05T10:28:41+08:00">
+<meta itemprop=wordCount content="557">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="安装说明">
 <meta name=twitter:description content="HttpRunner 的几种安装方式">
@@ -282,14 +282,10 @@ Versions
 <p>当前 HttpRunner v4 支持如下几种安装方式。</p>
 <h3 id=一键部署推荐>一键部署（推荐）</h3>
 <p>为了加速二进制包的下载速度，我们已经将编译产物上传到了阿里云 OSS，并且提供了一键安装部署的脚本。只需执行一条 shell 命令，即可完成 hrp 的下载和安装操作。</p>
-<blockquote>
-<p>注：大多数 Linux/macOS 系统中都会预置 curl/wget 命令行工具，如果你的系统中未安装，需自行解决。</p>
-</blockquote>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#8f5902;font-style:italic># install via curl</span>
-$ bash -c <span style=color:#4e9a06>&#34;</span><span style=color:#204a87;font-weight:700>$(</span>curl -ksSL https://httprunner.com/script/install.sh<span style=color:#204a87;font-weight:700>)</span><span style=color:#4e9a06>&#34;</span>
-<span style=color:#8f5902;font-style:italic># install via wget</span>
-$ bash -c <span style=color:#4e9a06>&#34;</span><span style=color:#204a87;font-weight:700>$(</span>wget https://httprunner.com/script/install.sh -O -<span style=color:#204a87;font-weight:700>)</span><span style=color:#4e9a06>&#34;</span>
-</code></pre></div><h3 id=下载编译产物>下载编译产物</h3>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ bash -c <span style=color:#4e9a06>&#34;</span><span style=color:#204a87;font-weight:700>$(</span>curl -ksSL https://httprunner.com/script/install.sh<span style=color:#204a87;font-weight:700>)</span><span style=color:#4e9a06>&#34;</span>
+</code></pre></div><p>注意：<code>install.sh</code> 脚本内部依赖 <code>curl/tar/mktemp/ls/rm/uname/chmod/command</code> 命令行工具，大多数 <code>Linux/macOS</code> 系统都会预置，如果你的系统中存在缺失，需自行解决。</p>
+<p>针对 <code>Windows</code> 系统，上述脚本较大概率无法正常运行，建议自行下载编译产物后进行配置。</p>
+<h3 id=下载编译产物>下载编译产物</h3>
 <p>同时，你也可以在 <a href=https://github.com/httprunner/httprunner/releases>GitHub Releases</a> 页面中，自行选择版本进行下载。</p>
 <p>当前 HttpRunner v4 在每次发布版本时，会自动编译生成 5 个版本，覆盖的环境包括：</p>
 <ul>
@@ -299,10 +295,19 @@ $ bash -c <span style=color:#4e9a06>&#34;</span><span style=color:#204a87;font-w
 <li>linux + arm64</li>
 <li>windows + amd64(x86)</li>
 </ul>
-<p>获取到编译产物后，你只需给 <code>hrp</code> 添加可运行权限即可。同时推荐将 <code>hrp</code> 移动到系统 bin 目录，方便全局调用。</p>
+<p>获取到编译产物（<code>.tar.gz</code> 格式）后，对压缩包进行解压：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ tar -xzf hrp-xxx.tar.gz
+</code></pre></div><p>解压后可以获得一个 <code>hrp</code> 二进制文件，你只需给 <code>hrp</code> 添加可运行权限即可。</p>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ chmod +x hrp
-$ mv hrp /user/local/bin
-</code></pre></div><h3 id=自行本地编译>自行本地编译</h3>
+</code></pre></div><p>同时为了让 <code>hrp</code> 在系统中可以全局调用，推荐将 <code>hrp</code> 添加到系统环境变量的 <code>PATH</code> 路径中，</p>
+<p>针对 <code>Linux/macOS</code> 系统，推荐将 <code>hrp</code> 移动到系统 <code>/user/local/bin</code> 目录。</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ mv hrp /user/local/bin/
+</code></pre></div><p>针对 <code>Windows</code> 系统：</p>
+<ul>
+<li>在 C 盘根目录下创建 <code>HttpRunner</code> 目录（自定义目录），将 <code>hrp.exe</code> 文件放在该目录下</li>
+<li>在「我的电脑=>属性=>高级系统设置=>环境变量」配置中，在 PATH 下新增系统变量，将 <code>C:\\HttpRunner</code> 写入 PATH</li>
+</ul>
+<h3 id=自行本地编译>自行本地编译</h3>
 <p>如果在上述已有的编译产物中没有包含你的系统类型，那么你可以自行拉取源码进行编译。</p>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#8f5902;font-style:italic># 拉取 hrp 源码</span>
 $ git clone https://github.com/httprunner/httprunner.git
@@ -319,8 +324,11 @@ $ make build
 ++ ./output/hrp -v
 hrp version v4.0.0-alpha
 </code></pre></div><h3 id=go-install-安装>go install 安装</h3>
-<p>如果你的系统有 Golang 环境，那么也可以通过 <code>go install</code> 命令从 GitHub 仓库中拉取最新代码进行安装。</p>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go install github.com/httprunner/httprunner/hrp/cmd/cli@master
+<p>如果你的系统有 Golang 环境，那么也可以通过 <code>go install</code> 命令从 GitHub 仓库中拉取代码进行安装。</p>
+<p>指定版本号（v4.x.y）进行安装：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go install github.com/httprunner/httprunner/v4/hrp/cmd/cli@v4.x.y
+</code></pre></div><p>如果你期望使用最新的代码进行安装，可以指定 master 分支进行安装：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go install github.com/httprunner/httprunner/v4/hrp/cmd/cli@master
 </code></pre></div><h3 id=检查安装结果>检查安装结果</h3>
 <p>完成安装操作后，你将获得一个 <code>hrp</code> 命令行工具。<code>hrp</code> 包含多个子命令，具体的使用方式可查看命令行帮助。</p>
 <p>在你的命令行终端中执行 <code>hrp -h</code> 命令，如果能正常打印帮助信息，则说明 <code>hrp</code> 已安装成功。</p>

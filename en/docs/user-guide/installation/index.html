@@ -20,11 +20,11 @@
 <meta property="og:description" content="How to install HttpRunner.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/en/docs/user-guide/installation/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-05T10:28:41+08:00">
 <meta itemprop=name content="Installation">
 <meta itemprop=description content="How to install HttpRunner.">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="170">
+<meta itemprop=dateModified content="2022-06-05T10:28:41+08:00">
+<meta itemprop=wordCount content="169">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="Installation">
 <meta name=twitter:description content="How to install HttpRunner.">
@@ -145,7 +145,7 @@ English
 </header>
 <p><code>HttpRunner</code> is developed with Golang, it supports Go <code>1.16+</code> and most operating systems. Combination of Go <code>1.16/1.17/1.18</code> and <code>macOS/Linux/Windows</code> are tested continuously on <a href=https://github.com/httprunner/httprunner/actions>GitHub-Actions</a>.</p>
 <h2 id=install-as-cli-tool>install as CLI tool</h2>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go get -u github.com/httprunner/httprunner/hrp/cmd/cli@master
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go install github.com/httprunner/httprunner/v4/hrp/cmd/cli@master
 </code></pre></div><p>Since installed, you will get a <code>hrp</code> command with multiple sub-commands.</p>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>$ hrp -h
 hrp (HttpRunner+) is the next generation for HttpRunner. Enjoy! ✨ 🚀 ✨
@@ -173,8 +173,8 @@ Flags:
 Use &#34;hrp [command] --help&#34; for more information about a command.
 </code></pre></div><h2 id=install-as-library>install as library</h2>
 <p>Beside using <code>hrp</code> as a CLI tool, you can also use it as golang library.</p>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go get -u github.com/httprunner/httprunner
-</code></pre></div><p>Then you can import <code>github.com/httprunner/httprunner</code> and write testcases in Golang.</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ go get -u github.com/httprunner/httprunner/v4
+</code></pre></div><p>Then you can import <code>github.com/httprunner/httprunner/v4/hrp</code> and write testcases in Golang.</p>
 </div>
 </main>
 </div>
