@@ -20,11 +20,11 @@
 <meta property="og:description" content="生成 HTML 接口测试报告">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/api-test/report/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-03T14:25:42+08:00">
 <meta itemprop=name content="测试报告">
 <meta itemprop=description content="生成 HTML 接口测试报告">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="0">
+<meta itemprop=dateModified content="2022-06-03T14:25:42+08:00">
+<meta itemprop=wordCount content="40">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="测试报告">
 <meta name=twitter:description content="生成 HTML 接口测试报告">
@@ -265,6 +265,17 @@ Versions
 <div class=lead>生成 HTML 接口测试报告</div>
 <header class=article-meta>
 </header>
+<p>使用 <code>hrp run</code> 执行接口测试时，我们可以通过添加启动参数 <code>--gen-html-report</code> 在当前项目根目录的 reports 中生成一份 HTML 格式的测试报告。测试报告的输出名称为：report-unix时间戳。</p>
+<h2 id=报告样式>报告样式</h2>
+<p>报告样式如下所示，与 HttpRunner v2.x 版本保持一致。</p>
+<p><img src=/image/report-1.png alt=img.png></p>
+<h2 id=报告说明>报告说明</h2>
+<p>在 Summary 中，会罗列本次测试的整体信息，包括测试开始时间、总运行时长、运行的 Go 版本和系统环境、运行结果统计数据。</p>
+<p>在 Details 中，会详细展示每一条测试用例的运行结果。</p>
+<p>其中，每一条测试用例对应一个 log 按钮，点击 log 按钮，会在弹出框中展示该用例执行的详细数据，包括请求的 headers 和 body、响应的 headers 和 body、校验结果、响应、响应耗时（elapsed）等信息。具体细节如下图所示：</p>
+<p><img src=/image/report-2.png alt=img_1.png>
+<img src=/image/report-3.png alt=img_2.png></p>
+<p>此外，若测试用例运行不成功（error），则在该测试用例的 Detail 中会出现 traceback 按钮，点击该按钮后，会在弹出框中展示失败原因。</p>
 </div>
 </main>
 </div>

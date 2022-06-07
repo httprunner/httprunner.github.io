@@ -20,11 +20,11 @@
 <meta property="og:description" content="基于自定义函数可辅助实现任意复杂的业务逻辑测试">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/enhance-tests/debugtalk/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-03T14:25:42+08:00">
 <meta itemprop=name content="自定义函数（debugtalk.xx）">
 <meta itemprop=description content="基于自定义函数可辅助实现任意复杂的业务逻辑测试">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="0">
+<meta itemprop=dateModified content="2022-06-03T14:25:42+08:00">
+<meta itemprop=wordCount content="320">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="自定义函数（debugtalk.xx）">
 <meta name=twitter:description content="基于自定义函数可辅助实现任意复杂的业务逻辑测试">
@@ -242,6 +242,17 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#plugin-go>plugin-go</a>
+<ul>
+<li><a href=#编写-dubugtalkgo>编写 dubugtalk.go</a></li>
+<li><a href=#生成-debugtalkbin>生成 debugtalk.bin</a></li>
+</ul>
+</li>
+<li><a href=#plugin-python>plugin-python</a></li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -265,6 +276,132 @@ Versions
 <div class=lead>基于自定义函数可辅助实现任意复杂的业务逻辑测试</div>
 <header class=article-meta>
 </header>
+<p>HttpRunner v4 开始支持全新的插件化机制（plugin），得益于 gRPC 服务支持，我们几乎可以用任何语言编写插件代码，这部分能力已经单独抽离出了一个基础组件，详见 <a href=https://github.com/httprunner/funplugin>httprunner/funplugin</a>。</p>
+<p>目前，我们已经支持 python、go 语言两种自定义函数编写方式。其中 go 代码编写，要求编译为 debugtalk.bin 文件。插件文件 debugtalk.xx 要求必须放在项目根目录中。</p>
+<p>接下来，介绍如何通过 go 与 python 两种自定义函数编写方式实现任意复杂的业务逻辑测试。</p>
+<h2 id=plugin-go>plugin-go</h2>
+<p>使用 go 语言编写方式，一共需要进行两步操作：</p>
+<ol>
+<li>编写 debugtalk.go；</li>
+<li>编译 debugtalk.go 生成 debugtalk.bin。</li>
+</ol>
+<h3 id=编写-dubugtalkgo>编写 dubugtalk.go</h3>
+<p>编写 debugtalk.go 需要注意如下两点：</p>
+<ol>
+<li>包名必须为 package main</li>
+<li>函数名推荐使用驼峰命名、首写字母需要大写</li>
+</ol>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#204a87;font-weight:700>package</span> <span style=color:#000>main</span>
+
+<span style=color:#204a87;font-weight:700>import</span> <span style=color:#000;font-weight:700>(</span>
+	<span style=color:#4e9a06>&#34;fmt&#34;</span>
+<span style=color:#000;font-weight:700>)</span>
+
+<span style=color:#204a87;font-weight:700>func</span> <span style=color:#000>SumTwoInt</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>a</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>b</span> <span style=color:#204a87;font-weight:700>int</span><span style=color:#000;font-weight:700>)</span> <span style=color:#204a87;font-weight:700>int</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>a</span> <span style=color:#ce5c00;font-weight:700>+</span> <span style=color:#000>b</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>func</span> <span style=color:#000>SumInts</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>args</span> <span style=color:#ce5c00;font-weight:700>...</span><span style=color:#204a87;font-weight:700>int</span><span style=color:#000;font-weight:700>)</span> <span style=color:#204a87;font-weight:700>int</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#204a87;font-weight:700>var</span> <span style=color:#000>sum</span> <span style=color:#204a87;font-weight:700>int</span>
+	<span style=color:#204a87;font-weight:700>for</span> <span style=color:#000>_</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>arg</span> <span style=color:#ce5c00;font-weight:700>:=</span> <span style=color:#204a87;font-weight:700>range</span> <span style=color:#000>args</span> <span style=color:#000;font-weight:700>{</span>
+		<span style=color:#000>sum</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#000>arg</span>
+	<span style=color:#000;font-weight:700>}</span>
+	<span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>sum</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>func</span> <span style=color:#000>Sum</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>args</span> <span style=color:#ce5c00;font-weight:700>...</span><span style=color:#204a87;font-weight:700>interface</span><span style=color:#000;font-weight:700>{})</span> <span style=color:#000;font-weight:700>(</span><span style=color:#204a87;font-weight:700>interface</span><span style=color:#000;font-weight:700>{},</span> <span style=color:#204a87;font-weight:700>error</span><span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#204a87;font-weight:700>var</span> <span style=color:#000>sum</span> <span style=color:#204a87;font-weight:700>float64</span>
+	<span style=color:#204a87;font-weight:700>for</span> <span style=color:#000>_</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>arg</span> <span style=color:#ce5c00;font-weight:700>:=</span> <span style=color:#204a87;font-weight:700>range</span> <span style=color:#000>args</span> <span style=color:#000;font-weight:700>{</span>
+		<span style=color:#204a87;font-weight:700>switch</span> <span style=color:#000>v</span> <span style=color:#ce5c00;font-weight:700>:=</span> <span style=color:#000>arg</span><span style=color:#000;font-weight:700>.(</span><span style=color:#204a87;font-weight:700>type</span><span style=color:#000;font-weight:700>)</span> <span style=color:#000;font-weight:700>{</span>
+		<span style=color:#204a87;font-weight:700>case</span> <span style=color:#204a87;font-weight:700>int</span><span style=color:#000;font-weight:700>:</span>
+			<span style=color:#000>sum</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#204a87>float64</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>v</span><span style=color:#000;font-weight:700>)</span>
+		<span style=color:#204a87;font-weight:700>case</span> <span style=color:#204a87;font-weight:700>float64</span><span style=color:#000;font-weight:700>:</span>
+			<span style=color:#000>sum</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#000>v</span>
+		<span style=color:#204a87;font-weight:700>default</span><span style=color:#000;font-weight:700>:</span>
+			<span style=color:#204a87;font-weight:700>return</span> <span style=color:#204a87;font-weight:700>nil</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>fmt</span><span style=color:#000;font-weight:700>.</span><span style=color:#000>Errorf</span><span style=color:#000;font-weight:700>(</span><span style=color:#4e9a06>&#34;unexpected type: %T&#34;</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>arg</span><span style=color:#000;font-weight:700>)</span>
+		<span style=color:#000;font-weight:700>}</span>
+	<span style=color:#000;font-weight:700>}</span>
+	<span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>sum</span><span style=color:#000;font-weight:700>,</span> <span style=color:#204a87;font-weight:700>nil</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>func</span> <span style=color:#000>SetupHookExample</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>args</span> <span style=color:#204a87;font-weight:700>string</span><span style=color:#000;font-weight:700>)</span> <span style=color:#204a87;font-weight:700>string</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>fmt</span><span style=color:#000;font-weight:700>.</span><span style=color:#000>Sprintf</span><span style=color:#000;font-weight:700>(</span><span style=color:#4e9a06>&#34;step name: %v, setup...&#34;</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>args</span><span style=color:#000;font-weight:700>)</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>func</span> <span style=color:#000>TeardownHookExample</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>args</span> <span style=color:#204a87;font-weight:700>string</span><span style=color:#000;font-weight:700>)</span> <span style=color:#204a87;font-weight:700>string</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>fmt</span><span style=color:#000;font-weight:700>.</span><span style=color:#000>Sprintf</span><span style=color:#000;font-weight:700>(</span><span style=color:#4e9a06>&#34;step name: %v, teardown...&#34;</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>args</span><span style=color:#000;font-weight:700>)</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>func</span> <span style=color:#000>GetUserAgent</span><span style=color:#000;font-weight:700>()</span> <span style=color:#204a87;font-weight:700>string</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#204a87;font-weight:700>return</span> <span style=color:#4e9a06>&#34;hrp/fungo&#34;</span>
+<span style=color:#000;font-weight:700>}</span>
+
+</code></pre></div><h3 id=生成-debugtalkbin>生成 debugtalk.bin</h3>
+<p>编写完 debugtalk.go 后，还需要手动编译成 hrp 可直接调用的插件产物。我们可以使用如下命令进行编译：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hrp build debugtalk.go -o dest_path  // dest_path 为项目根路径
+</code></pre></div><p>使用 hrp build 编译会在 debugtalk.go 所在目录下生成 debugtalk_gen.go 与 go.mod 等编译中间产物，用户无需关心。编译完成后会在指定的项目根目录下生成 hrp 可直接调用的 debugtalk.bin 文件。</p>
+<p>到此，我们就可以在测试用例中调用刚刚编写好的自定义函数了。调用的函数名原则上应该与 debugtalk.go 文件中定义的函数名保持一致，但为了兼顾命名的通用性，hrp 对调用函数时使用驼峰与蛇形命名同时做了兼容。</p>
+<h2 id=plugin-python>plugin-python</h2>
+<p>使用 python 语言编写方式，仅需在项目根目录 debugtalk.py 中编写自定义函数即可，无需进行额外编译。同时，使用 hrp run/boom 也兼容 v4.0 版本之前的写法。</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#204a87;font-weight:700>import</span> <span style=color:#000>logging</span>
+<span style=color:#204a87;font-weight:700>import</span> <span style=color:#000>time</span>
+<span style=color:#204a87;font-weight:700>from</span> <span style=color:#000>typing</span> <span style=color:#204a87;font-weight:700>import</span> <span style=color:#000>List</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>get_user_agent</span><span style=color:#000;font-weight:700>():</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#4e9a06>&#34;hrp/funppy&#34;</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>sleep</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>n_secs</span><span style=color:#000;font-weight:700>):</span>
+    <span style=color:#000>time</span><span style=color:#ce5c00;font-weight:700>.</span><span style=color:#000>sleep</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>n_secs</span><span style=color:#000;font-weight:700>)</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>sum</span><span style=color:#000;font-weight:700>(</span><span style=color:#ce5c00;font-weight:700>*</span><span style=color:#000>args</span><span style=color:#000;font-weight:700>):</span>
+    <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>=</span> <span style=color:#0000cf;font-weight:700>0</span>
+    <span style=color:#204a87;font-weight:700>for</span> <span style=color:#000>arg</span> <span style=color:#204a87;font-weight:700>in</span> <span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span>
+        <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#000>arg</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>result</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>sum_ints</span><span style=color:#000;font-weight:700>(</span><span style=color:#ce5c00;font-weight:700>*</span><span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span> <span style=color:#000>List</span><span style=color:#000;font-weight:700>[</span><span style=color:#204a87>int</span><span style=color:#000;font-weight:700>])</span> <span style=color:#ce5c00;font-weight:700>-&gt;</span> <span style=color:#204a87>int</span><span style=color:#000;font-weight:700>:</span>
+    <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>=</span> <span style=color:#0000cf;font-weight:700>0</span>
+    <span style=color:#204a87;font-weight:700>for</span> <span style=color:#000>arg</span> <span style=color:#204a87;font-weight:700>in</span> <span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span>
+        <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#000>arg</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>result</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>sum_two_int</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>a</span><span style=color:#000;font-weight:700>:</span> <span style=color:#204a87>int</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>b</span><span style=color:#000;font-weight:700>:</span> <span style=color:#204a87>int</span><span style=color:#000;font-weight:700>)</span> <span style=color:#ce5c00;font-weight:700>-&gt;</span> <span style=color:#204a87>int</span><span style=color:#000;font-weight:700>:</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>a</span> <span style=color:#ce5c00;font-weight:700>+</span> <span style=color:#000>b</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>sum_two_string</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>a</span><span style=color:#000;font-weight:700>:</span> <span style=color:#204a87>str</span><span style=color:#000;font-weight:700>,</span> <span style=color:#000>b</span><span style=color:#000;font-weight:700>:</span> <span style=color:#204a87>str</span><span style=color:#000;font-weight:700>)</span> <span style=color:#ce5c00;font-weight:700>-&gt;</span> <span style=color:#204a87>str</span><span style=color:#000;font-weight:700>:</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>a</span> <span style=color:#ce5c00;font-weight:700>+</span> <span style=color:#000>b</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>sum_strings</span><span style=color:#000;font-weight:700>(</span><span style=color:#ce5c00;font-weight:700>*</span><span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span> <span style=color:#000>List</span><span style=color:#000;font-weight:700>[</span><span style=color:#204a87>str</span><span style=color:#000;font-weight:700>])</span> <span style=color:#ce5c00;font-weight:700>-&gt;</span> <span style=color:#204a87>str</span><span style=color:#000;font-weight:700>:</span>
+    <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>=</span> <span style=color:#4e9a06>&#34;&#34;</span>
+    <span style=color:#204a87;font-weight:700>for</span> <span style=color:#000>arg</span> <span style=color:#204a87;font-weight:700>in</span> <span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span>
+        <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#000>arg</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>result</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>concatenate</span><span style=color:#000;font-weight:700>(</span><span style=color:#ce5c00;font-weight:700>*</span><span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span> <span style=color:#000>List</span><span style=color:#000;font-weight:700>[</span><span style=color:#204a87>str</span><span style=color:#000;font-weight:700>])</span> <span style=color:#ce5c00;font-weight:700>-&gt;</span> <span style=color:#204a87>str</span><span style=color:#000;font-weight:700>:</span>
+    <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>=</span> <span style=color:#4e9a06>&#34;&#34;</span>
+    <span style=color:#204a87;font-weight:700>for</span> <span style=color:#000>arg</span> <span style=color:#204a87;font-weight:700>in</span> <span style=color:#000>args</span><span style=color:#000;font-weight:700>:</span>
+        <span style=color:#000>result</span> <span style=color:#ce5c00;font-weight:700>+=</span> <span style=color:#204a87>str</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>arg</span><span style=color:#000;font-weight:700>)</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#000>result</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>setup_hook_example</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>name</span><span style=color:#000;font-weight:700>):</span>
+    <span style=color:#000>logging</span><span style=color:#ce5c00;font-weight:700>.</span><span style=color:#000>warning</span><span style=color:#000;font-weight:700>(</span><span style=color:#4e9a06>&#34;setup_hook_example&#34;</span><span style=color:#000;font-weight:700>)</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#4e9a06>f</span><span style=color:#4e9a06>&#34;setup_hook_example: </span><span style=color:#4e9a06>{</span><span style=color:#000>name</span><span style=color:#4e9a06>}</span><span style=color:#4e9a06>&#34;</span>
+
+
+<span style=color:#204a87;font-weight:700>def</span> <span style=color:#000>teardown_hook_example</span><span style=color:#000;font-weight:700>(</span><span style=color:#000>name</span><span style=color:#000;font-weight:700>):</span>
+    <span style=color:#000>logging</span><span style=color:#ce5c00;font-weight:700>.</span><span style=color:#000>warning</span><span style=color:#000;font-weight:700>(</span><span style=color:#4e9a06>&#34;teardown_hook_example&#34;</span><span style=color:#000;font-weight:700>)</span>
+    <span style=color:#204a87;font-weight:700>return</span> <span style=color:#4e9a06>f</span><span style=color:#4e9a06>&#34;teardown_hook_example: </span><span style=color:#4e9a06>{</span><span style=color:#000>name</span><span style=color:#4e9a06>}</span><span style=color:#4e9a06>&#34;</span>
+
+</code></pre></div><p>注意：使用 hrp 进行测试时，hrp 会根据 debugtalk.py 文件生成程序可直接调用的 .debugtalk_gen.py 文件，请勿编辑。</p>
 </div>
 </main>
 </div>

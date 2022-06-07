@@ -20,11 +20,11 @@
 <meta property="og:description" content="基于参数化数据驱动可实现多组数据驱动测试执行">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/enhance-tests/parameterize/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-03T14:25:42+08:00">
 <meta itemprop=name content="参数化数据驱动（parameterize）">
 <meta itemprop=description content="基于参数化数据驱动可实现多组数据驱动测试执行">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="0">
+<meta itemprop=dateModified content="2022-06-03T14:25:42+08:00">
+<meta itemprop=wordCount content="114">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="参数化数据驱动（parameterize）">
 <meta name=twitter:description content="基于参数化数据驱动可实现多组数据驱动测试执行">
@@ -265,6 +265,84 @@ Versions
 <div class=lead>基于参数化数据驱动可实现多组数据驱动测试执行</div>
 <header class=article-meta>
 </header>
+<blockquote>
+<p>v4.0 版本开始，对标 LoadRunner，参数化数据驱动支持对每个参数设置参数选取策略，具体策略包括sequential、random与unique。</p>
+</blockquote>
+<p>为了让大家更快速的理解，本节将从数据结构与使用示例出发，详细介绍如何配置参数化数据驱动。</p>
+<p>参数化数据驱动的数据结构如下：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#204a87;font-weight:700>type</span> <span style=color:#000>TConfig</span> <span style=color:#204a87;font-weight:700>struct</span> <span style=color:#000;font-weight:700>{</span>
+    <span style=color:#ce5c00;font-weight:700>...</span>
+    <span style=color:#000>Parameters</span>        <span style=color:#204a87;font-weight:700>map</span><span style=color:#000;font-weight:700>[</span><span style=color:#204a87;font-weight:700>string</span><span style=color:#000;font-weight:700>]</span><span style=color:#204a87;font-weight:700>interface</span><span style=color:#000;font-weight:700>{}</span> <span style=color:#4e9a06>`json:&#34;parameters,omitempty&#34; yaml:&#34;parameters,omitempty&#34;`</span>
+    <span style=color:#000>ParametersSetting</span> <span style=color:#ce5c00;font-weight:700>*</span><span style=color:#000>TParamsConfig</span>         <span style=color:#4e9a06>`json:&#34;parameters_setting,omitempty&#34; yaml:&#34;parameters_setting,omitempty&#34;`</span>
+    <span style=color:#ce5c00;font-weight:700>...</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>type</span> <span style=color:#000>TParamsConfig</span> <span style=color:#204a87;font-weight:700>struct</span> <span style=color:#000;font-weight:700>{</span>
+    <span style=color:#000>PickOrder</span>  <span style=color:#000>iteratorPickOrder</span>           <span style=color:#4e9a06>`json:&#34;strategy,omitempty&#34; yaml:&#34;strategy,omitempty&#34;`</span>
+    <span style=color:#000>Strategies</span> <span style=color:#204a87;font-weight:700>map</span><span style=color:#000;font-weight:700>[</span><span style=color:#204a87;font-weight:700>string</span><span style=color:#000;font-weight:700>]</span><span style=color:#000>iteratorStrategy</span> <span style=color:#4e9a06>`json:&#34;strategies,omitempty&#34; yaml:&#34;strategies,omitempty&#34;`</span>
+    <span style=color:#000>Limit</span>      <span style=color:#204a87;font-weight:700>int</span>                         <span style=color:#4e9a06>`json:&#34;limit,omitempty&#34; yaml:&#34;limit,omitempty&#34;`</span>
+<span style=color:#000;font-weight:700>}</span>
+
+<span style=color:#204a87;font-weight:700>type</span> <span style=color:#000>iteratorPickOrder</span> <span style=color:#204a87;font-weight:700>string</span>
+
+<span style=color:#204a87;font-weight:700>const</span> <span style=color:#000;font-weight:700>(</span>
+    <span style=color:#000>pickOrderSequential</span> <span style=color:#000>iteratorPickOrder</span> <span style=color:#000;font-weight:700>=</span> <span style=color:#4e9a06>&#34;sequential&#34;</span>
+    <span style=color:#000>pickOrderRandom</span>     <span style=color:#000>iteratorPickOrder</span> <span style=color:#000;font-weight:700>=</span> <span style=color:#4e9a06>&#34;random&#34;</span>
+    <span style=color:#000>pickOrderUnique</span>     <span style=color:#000>iteratorPickOrder</span> <span style=color:#000;font-weight:700>=</span> <span style=color:#4e9a06>&#34;unique&#34;</span>
+<span style=color:#000;font-weight:700>)</span>
+
+<span style=color:#204a87;font-weight:700>type</span> <span style=color:#000>iteratorStrategy</span> <span style=color:#204a87;font-weight:700>struct</span> <span style=color:#000;font-weight:700>{</span>
+    <span style=color:#000>Name</span>      <span style=color:#204a87;font-weight:700>string</span>            <span style=color:#4e9a06>`json:&#34;name,omitempty&#34; yaml:&#34;name,omitempty&#34;`</span>
+    <span style=color:#000>PickOrder</span> <span style=color:#000>iteratorPickOrder</span> <span style=color:#4e9a06>`json:&#34;pick_order,omitempty&#34; yaml:&#34;pick_order,omitempty&#34;`</span>
+<span style=color:#000;font-weight:700>}</span>
+</code></pre></div><p>参数化数据驱动使用示例：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#204a87;font-weight:700>config</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#000>...</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>parameters</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>user_agent</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;iOS/10.1&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;iOS/10.2&#34;</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>username-password</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>${parameterize($file)}</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>user_id</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>${get_user_id(10)}</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>parameters_setting</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>pick_order</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;random&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>strategies</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>user_agent</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;user-identity&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>pick_order</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;sequential&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>username-password</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;user-info&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>pick_order</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;random&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>limit</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>6</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>file</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>examples/hrp/account.csv</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#000>...</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>teststeps</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#000>...</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><p>参数化数据驱动使用说明：</p>
+<ul>
+<li>
+<p>parameters（支持 3 种输入方式）</p>
+<ul>
+<li>参数列表，形如：<code>user_agent: [ "iOS/10.1", "iOS/10.2" ]</code></li>
+<li>csv文件，形如：<code>username-password: ${parameterize($file)}</code>，csv 示例：<a href=https://github.com/httprunner/httprunner/blob/master/examples/hrp/account.csv>account.csv</a></li>
+<li>自定义函数，形如：<code>user_id: ${get_user_id(10)}</code>，函数返回值为列表</li>
+</ul>
+<p>说明：username-password参数名称采用短横线（-）作为分隔符，表示从 csv 中读取 username 与 password 这两个参数。如果直接采用列表方式导入参数，username-password需对应一个二维列表，自定义函数方式同理。</p>
+</li>
+<li>
+<p>parameters_setting</p>
+<ul>
+<li>pick_order：整体策略，如果未单独指定参数选取策略，则默认使用整体策略</li>
+<li>strategies：单独配置每个参数的策略</li>
+<li>limit：迭代次数</li>
+</ul>
+</li>
+</ul>
+<p>针对「parameters_setting」，有 2 个需要特别注意的点：</p>
+<ul>
+<li>strategies 可以为每一个参数配置参数名称与具体选取策略。参数名称仅用于标识，可选填。如果未设置参数选取策略，则默认使用 sequential 策略。</li>
+<li>迭代次数默认为所有顺序选取执行参数的笛卡尔积，我们也可以通过设置 limit 来指定迭代次数，有效的迭代次数为 limit > 0，如果 limit = 0 表示默认，如果 limit &lt; 0，则表示无限制迭代次数。</li>
+</ul>
 </div>
 </main>
 </div>

@@ -20,11 +20,11 @@
 <meta property="og:description" content="使用 Prometheus 实现性能监控">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/load-test/monitor/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-18T13:45:11+08:00">
+<meta property="article:modified_time" content="2022-06-03T14:25:42+08:00">
 <meta itemprop=name content="性能监控">
 <meta itemprop=description content="使用 Prometheus 实现性能监控">
-<meta itemprop=dateModified content="2022-05-18T13:45:11+08:00">
-<meta itemprop=wordCount content="62">
+<meta itemprop=dateModified content="2022-06-03T14:25:42+08:00">
+<meta itemprop=wordCount content="385">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="性能监控">
 <meta name=twitter:description content="使用 Prometheus 实现性能监控">
@@ -242,6 +242,18 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#快速上手>快速上手</a>
+<ul>
+<li><a href=#配置prometheus>配置Prometheus</a></li>
+<li><a href=#配置httprunner>配置HttpRunner</a></li>
+<li><a href=#配置grafana>配置Grafana</a></li>
+</ul>
+</li>
+<li><a href=#指标说明>指标说明</a></li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -265,13 +277,243 @@ Versions
 <div class=lead>使用 Prometheus 实现性能监控</div>
 <header class=article-meta>
 </header>
-<h2 id=report-metrics-to-prometheus-pushgateway>Report metrics to Prometheus Pushgateway</h2>
-<p>Besides printing load testing results in console, you can also push metrics to <a href=https://github.com/prometheus/pushgateway>Prometheus Pushgateway</a>, and then you can configure pretty graphs on <a href=https://grafana.com/>Grafana</a>.</p>
-<pre tabindex=0><code>$ hrp boom examples/demo.json --spawn-count 10 --spawn-rate 1 --prometheus-gateway http://127.0.0.1:9091
-</code></pre><p>You can deploy the Pushgateway using the <a href=https://hub.docker.com/r/prom/pushgateway>prom/pushgateway</a> Docker image at ease.</p>
-<pre tabindex=0><code>$ docker pull prom/pushgateway
-$ docker run -d -p 9091:9091 prom/pushgateway
-</code></pre>
+<h2 id=快速上手>快速上手</h2>
+<p>本节将介绍如何从零搭建 Prometheus 服务，打通性能监控链路，帮助大家能快速上手。</p>
+<h3 id=配置prometheus>配置Prometheus</h3>
+<p>在官网 <a href=https://prometheus.io/download/>Download | Prometheus</a> 下载 prometheus 与 pushgateway，并进行如下配置。</p>
+<h4 id=pushgateway>Pushgateway</h4>
+<p>Pushgateway 不需要修改任何配置文件，直接运行可执行文件即可启动，默认端口号为 9091，如需更改端口号，需启动时指定。启动 Pushgateway：</p>
+<pre tabindex=0><code>./pushgateway --web.listen-address=&quot;:9091&quot;
+</code></pre><h4 id=prometheus-server>Prometheus Server</h4>
+<p>启动 Server 前需要手动更改 prometheus.yml 配置文件，明确拉取指标的实例地址（本案例中的 Pushgateway 地址）与 Server 拉取 Pushgateway 实例的时间间隔（ scrape_interval ），具体更改如下：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yml data-lang=yml><span style=color:#204a87;font-weight:700>global</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>scrape_interval</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>     </span><span style=color:#000>15s</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#8f5902;font-style:italic># By default, scrape targets every 15 seconds.</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>evaluation_interval</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>15s</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#8f5902;font-style:italic># Evaluate rules every 15 seconds.</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#8f5902;font-style:italic># Attach these extra labels to all timeseries collected by this Prometheus instance.</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>external_labels</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>monitor</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#39;codelab-monitor&#39;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>rule_files</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span>- <span style=color:#4e9a06>&#39;prometheus.rules.yml&#39;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>scrape_configs</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span>- <span style=color:#204a87;font-weight:700>job_name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#39;prometheus&#39;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#8f5902;font-style:italic># Override the global default and scrape targets from this job every 5 seconds.</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>scrape_interval</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>5s</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>static_configs</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>targets</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#39;localhost:9090&#39;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span>- <span style=color:#204a87;font-weight:700>job_name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#39;pushgateway&#39;</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#8f5902;font-style:italic># metrics_path defaults to &#39;/metrics&#39;  # scheme defaults to &#39;http&#39;.</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>scrape_interval</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>3s</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>static_configs</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>targets</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#39;localhost:9091&#39;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>labels</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>instance</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>httprunner</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><p>注意：Pushgateway 的 scrape_interval 需要与 HttpRunner 上报数据频率保持一致，即设置为 3s。</p>
+<p>启动 Prometheus Server：</p>
+<pre tabindex=0><code>./prometheus --config.file=prometheus.yml
+</code></pre><h3 id=配置httprunner>配置HttpRunner</h3>
+<p>配置 HttpRunner 就比较简单了，在使用 hrp boom 启动性能测试时通过 prometheus-gateway 参数设置 Pushgateway 地址即可，如 <code>--prometheus-gateway=":9091"</code>。在性能过程中，HttpRunner 会以 3s 的数据上报间隔将性能测试指标上报到 Pushgateway。</p>
+<h3 id=配置grafana>配置Grafana</h3>
+<p>Grafana 的快速上手可以参考：<a href=https://prometheus.io/docs/visualization/grafana/>Grafana | Prometheus</a> ，不再赘述。</p>
+<p>本文提供 <code>hrp boom</code> 单机模式的 Dashboard 模板，大家在 HttpRunner 公众号回复「Grafana」获取模板下载地址，然后导入 Grafana 中即可使用。</p>
+<blockquote>
+<p>注：分布式场景的 Grafana Dashboard 模板，待 HttpRunner 上线分布式性能测试能力后再提供。</p>
+</blockquote>
+<img src=/image/qrcode.png alt=HttpRunner width=300>
+<p>模板最终效果如下:</p>
+<p><img src=/image/demo-grafana.png alt="Grafana Dashboard 1"></p>
+<p><img src=/image/demo-grafana-2.png alt="Grafana Dashboard 2"></p>
+<h2 id=指标说明>指标说明</h2>
+<p>本节将介绍 HttpRunner 上报的指标说明，大家可以根据需要再丰富本文提供的 Grafana Dashboard 模板。</p>
+<p>HttpRunner 上报至 Prometheus 指标具体可分为两大类：</p>
+<ul>
+<li>3s统计间隔内的性能测试指标，可实时监控最新性能数据详情</li>
+<li>整体性能测试指标，可实时监控测试过程的整体性能指标</li>
+</ul>
+<p>指标名称与具体说明如下:</p>
+<table>
+<thead>
+<tr>
+<th style=text-align:center>指标名称</th>
+<th style=text-align:center>指标说明</th>
+<th style=text-align:center>指标类型</th>
+<th style=text-align:center>标签</th>
+<th style=text-align:center>统计间隔</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style=text-align:center>num_requests</td>
+<td style=text-align:center>The number of requests</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>num_failures</td>
+<td style=text-align:center>The number of failures</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>median_response_time</td>
+<td style=text-align:center>The median response time</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>average_response_time</td>
+<td style=text-align:center>The average response time</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>min_response_time</td>
+<td style=text-align:center>The min response time</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>max_response_time</td>
+<td style=text-align:center>The max response time</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>average_content_length</td>
+<td style=text-align:center>The average content length</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>current_rps</td>
+<td style=text-align:center>The current requests per second</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>current_fail_per_sec</td>
+<td style=text-align:center>The current failure number per second</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>3s</td>
+</tr>
+<tr>
+<td style=text-align:center>total_num_requests</td>
+<td style=text-align:center>The number of requests in total</td>
+<td style=text-align:center>CounterVec</td>
+<td style=text-align:center>method、name</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>total_num_failures</td>
+<td style=text-align:center>The number of failures in total</td>
+<td style=text-align:center>CounterVec</td>
+<td style=text-align:center>method、name</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>errors</td>
+<td style=text-align:center>The errors of load testing</td>
+<td style=text-align:center>CounterVec</td>
+<td style=text-align:center>method、name、error</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>response_time</td>
+<td style=text-align:center>The summary of response time（PCT50/PCT90/PCT95）</td>
+<td style=text-align:center>SummaryVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>users</td>
+<td style=text-align:center>The current number of users</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>state</td>
+<td style=text-align:center>The current runner state, 1=initializing, 2=spawning, 3=running, 4=quitting, 5=stopped</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>duration</td>
+<td style=text-align:center>The duration of load testing</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>total_average_response_time</td>
+<td style=text-align:center>The average response time in total milliseconds</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>total_min_response_time</td>
+<td style=text-align:center>The min response time in total milliseconds</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>total_max_response_time</td>
+<td style=text-align:center>The max response time in total milliseconds</td>
+<td style=text-align:center>GaugeVec</td>
+<td style=text-align:center>name、method</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>total_rps</td>
+<td style=text-align:center>The requests per second in total</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>fail_ratio</td>
+<td style=text-align:center>The ratio of request failures in total</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>total_fail_per_sec</td>
+<td style=text-align:center>The failure number per second in total</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>transactions_passed</td>
+<td style=text-align:center>The accumulated number of passed transactions</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+<tr>
+<td style=text-align:center>transactions_failed</td>
+<td style=text-align:center>The accumulated number of failed transactions</td>
+<td style=text-align:center>Gauge</td>
+<td style=text-align:center>N/A</td>
+<td style=text-align:center>total</td>
+</tr>
+</tbody>
+</table>
 </div>
 </main>
 </div>
