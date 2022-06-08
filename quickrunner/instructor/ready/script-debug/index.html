@@ -17,22 +17,22 @@
 <title>脚本调试 | HttpRunner</title>
 <meta name=description content="创建脚本后，您可直接以独立模式调试该脚本，该功能可以帮助您快速发现脚本中需要解决的错误或者问题（如参数化的动态值），
 具体操作如下：
-点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会报「调试成功」，若脚本执行出现错误，则会「报调试失败」。 …">
+点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会提示「调试成功」，若脚本执行出现错误，则会提示「调试失 …">
 <meta property="og:title" content="脚本调试">
 <meta property="og:description" content="创建脚本后，您可直接以独立模式调试该脚本，该功能可以帮助您快速发现脚本中需要解决的错误或者问题（如参数化的动态值）， 具体操作如下：
-点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会报「调试成功」，若脚本执行出现错误，则会「报调试失败」。">
+点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会提示「调试成功」，若脚本执行出现错误，则会提示「调试失败」。">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/quickrunner/instructor/ready/script-debug/"><meta property="article:section" content="QuickRunner">
-<meta property="article:modified_time" content="2022-06-07T18:45:39+08:00">
+<meta property="article:modified_time" content="2022-06-08T15:32:19+08:00">
 <meta itemprop=name content="脚本调试">
 <meta itemprop=description content="创建脚本后，您可直接以独立模式调试该脚本，该功能可以帮助您快速发现脚本中需要解决的错误或者问题（如参数化的动态值）， 具体操作如下：
-点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会报「调试成功」，若脚本执行出现错误，则会「报调试失败」。">
-<meta itemprop=dateModified content="2022-06-07T18:45:39+08:00">
+点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会提示「调试成功」，若脚本执行出现错误，则会提示「调试失败」。">
+<meta itemprop=dateModified content="2022-06-08T15:32:19+08:00">
 <meta itemprop=wordCount content="3">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="脚本调试">
 <meta name=twitter:description content="创建脚本后，您可直接以独立模式调试该脚本，该功能可以帮助您快速发现脚本中需要解决的错误或者问题（如参数化的动态值）， 具体操作如下：
-点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会报「调试成功」，若脚本执行出现错误，则会「报调试失败」。">
+点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会提示「调试成功」，若脚本执行出现错误，则会提示「调试失败」。">
 <link rel=preload href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css as=style>
 <link href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css rel=stylesheet integrity>
 <script src=https://code.jquery.com/jquery-3.6.0.min.js integrity=sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK crossorigin=anonymous></script>
@@ -108,6 +108,8 @@ Versions
 <ul class="ul-2 foldable">
 <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerintroductionoverview-li>
 <a href=/quickrunner/introduction/overview/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerintroductionoverview><span>整体概览</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerintroductioncase-li>
+<a href=/quickrunner/introduction/case/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerintroductioncase><span>成功案例</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerintroductionfaq-li>
 <a href=/quickrunner/introduction/faq/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerintroductionfaq><span>常见问题</span></a>
 </li>
@@ -224,7 +226,7 @@ Versions
 </header>
 <p>创建脚本后，您可直接以独立模式调试该脚本，该功能可以帮助您快速发现脚本中需要解决的错误或者问题（如参数化的动态值），
 具体操作如下：</p>
-<p>点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会报「调试成功」，若脚本执行出现错误，则会「报调试失败」。</p>
+<p>点击【调试】按钮，启动脚本调试，它会在调试界面展示出运行的全部过程以及请求响应的内容。如果脚本请求成功，则会提示「调试成功」，若脚本执行出现错误，则会提示「调试失败」。</p>
 <img src=/image/QuickRunner/direction/script-debug1.png alt=QuickRunner width=800>
 <img src=/image/QuickRunner/direction/script-debug2.png alt=QuickRunner width=800>
 </div>
