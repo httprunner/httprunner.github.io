@@ -14,23 +14,27 @@
 <link rel=icon type=image/png href=/favicons/android-96x96.png sizes=96x96>
 <link rel=icon type=image/png href=/favicons/android-144x144.png sizes=144x144>
 <link rel=icon type=image/png href=/favicons/android-192x192.png sizes=192x192>
-<title>快速上手 | HttpRunner</title>
-<meta name=description content="为了方便您在短时间内对 QuickRunner 有一个整体的感知，这里我们将为您展示一套基本的测试流程，方便您后续参考。">
-<meta property="og:title" content="快速上手">
-<meta property="og:description" content="为了方便您在短时间内对 QuickRunner 有一个整体的感知，这里我们将为您展示一套基本的测试流程，方便您后续参考。">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://httprunner.com/quickrunner/quickstart/">
-<meta itemprop=name content="快速上手">
-<meta itemprop=description content="为了方便您在短时间内对 QuickRunner 有一个整体的感知，这里我们将为您展示一套基本的测试流程，方便您后续参考。"><meta name=twitter:card content="summary">
-<meta name=twitter:title content="快速上手">
-<meta name=twitter:description content="为了方便您在短时间内对 QuickRunner 有一个整体的感知，这里我们将为您展示一套基本的测试流程，方便您后续参考。">
+<title>🚀 快速上手 | HttpRunner</title>
+<meta name=description content="一个实例带你快速上手 QuickRunner">
+<meta property="og:title" content="🚀 快速上手">
+<meta property="og:description" content="一个实例带你快速上手 QuickRunner">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://httprunner.com/quickrunner/quickstart/"><meta property="article:section" content="QuickRunner">
+<meta property="article:modified_time" content="2022-06-08T19:16:27+08:00">
+<meta itemprop=name content="🚀 快速上手">
+<meta itemprop=description content="一个实例带你快速上手 QuickRunner">
+<meta itemprop=dateModified content="2022-06-08T19:16:27+08:00">
+<meta itemprop=wordCount content="45">
+<meta itemprop=keywords content><meta name=twitter:card content="summary">
+<meta name=twitter:title content="🚀 快速上手">
+<meta name=twitter:description content="一个实例带你快速上手 QuickRunner">
 <link rel=preload href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css as=style>
 <link href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css rel=stylesheet integrity>
 <script src=https://code.jquery.com/jquery-3.6.0.min.js integrity=sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK crossorigin=anonymous></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LNRMVFG5LL"></script>
 <script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-LNRMVFG5LL',{anonymize_ip:!1})}</script>
 </head>
-<body class=td-section>
+<body class=td-page>
 <header>
 <nav class="js-navbar-scroll navbar navbar-expand navbar-dark flex-column flex-md-row td-navbar">
 <a class=navbar-brand href=/>
@@ -48,7 +52,7 @@
 <a class=nav-link href=/community/><span>社区</span></a>
 </li>
 <li class="nav-item mr-4 mb-2 mb-lg-0">
-<a class="nav-link active" href=/quickrunner/><span class=active>QuickRunner 🚀</span></a>
+<a class="nav-link active" href=/quickrunner/><span class=active>QuickRunner</span></a>
 </li>
 <li class="nav-item dropdown mr-4 d-none d-lg-block">
 <a class="nav-link dropdown-toggle" href=# id=navbarDropdown role=button data-toggle=dropdown aria-haspopup=true aria-expanded=false>
@@ -92,97 +96,85 @@ Versions
 </div>
 <ul class="td-sidebar-nav__section pr-md-3 ul-0">
 <li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id=m-quickrunner-li>
-<a href=/quickrunner/ title="欢迎使用 QuickRunner" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id=m-quickrunner><span>QuickRunner 🚀</span></a>
+<a href=/quickrunner/ title="欢迎使用 QuickRunner" class="align-left pl-0 td-sidebar-link td-sidebar-link__section tree-root" id=m-quickrunner><span>QuickRunner</span></a>
 <ul class=ul-1>
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id=m-quickrunnerintroduction-li>
-<a href=/quickrunner/introduction/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunnerintroduction><span>QuickRunner是什么</span></a>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-quickrunneroverview-li>
+<a href=/quickrunner/overview/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneroverview><span>🔍 整体概览</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child active-path" id=m-quickrunnerquickstart-li>
+<a href=/quickrunner/quickstart/ class="align-left pl-0 active td-sidebar-link td-sidebar-link__page" id=m-quickrunnerquickstart><span class=td-sidebar-nav-active-item>🚀 快速上手</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id=m-quickrunneruser-guide-li>
+<a href=/quickrunner/user-guide/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunneruser-guide><span>📚 用户指南</span></a>
 <ul class="ul-2 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerintroductionoverview-li>
-<a href=/quickrunner/introduction/overview/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerintroductionoverview><span>整体概览</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerintroductioncase-li>
-<a href=/quickrunner/introduction/case/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerintroductioncase><span>成功案例</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerintroductionfaq-li>
-<a href=/quickrunner/introduction/faq/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerintroductionfaq><span>常见问题</span></a>
-</li>
-</ul>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child active-path" id=m-quickrunnerquickstart-li>
-<a href=/quickrunner/quickstart/ class="align-left pl-0 active td-sidebar-link td-sidebar-link__section" id=m-quickrunnerquickstart><span class=td-sidebar-nav-active-item>快速上手</span></a>
-<ul class="ul-2 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-quickrunnerquickstartquickstart-li>
-<a href=/quickrunner/quickstart/quickstart/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerquickstartquickstart><span>实例case</span></a>
-</li>
-</ul>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child" id=m-quickrunnerinstructor-li>
-<a href=/quickrunner/instructor/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunnerinstructor><span>具体功能介绍</span></a>
-<ul class="ul-2 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorinstallation-li>
-<a href=/quickrunner/instructor/installation/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorinstallation><span>工具安装</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunnerinstructorready-li>
-<a href=/quickrunner/instructor/ready/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunnerinstructorready><span>脚本准备</span></a>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideinstallation-li>
+<a href=/quickrunner/user-guide/installation/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideinstallation><span>工具安装</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunneruser-guideprepare-li>
+<a href=/quickrunner/user-guide/prepare/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunneruser-guideprepare><span>脚本准备</span></a>
 <ul class="ul-3 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadycreat-li>
-<a href=/quickrunner/instructor/ready/creat/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadycreat><span>打开&新建项目</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyscript-edit-li>
-<a href=/quickrunner/instructor/ready/script-edit/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyscript-edit><span>脚本编写</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyhook-li>
-<a href=/quickrunner/instructor/ready/hook/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyhook><span>hook机制</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyreference_case-li>
-<a href=/quickrunner/instructor/ready/reference_case/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyreference_case><span>用例引用</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyreference_api-li>
-<a href=/quickrunner/instructor/ready/reference_api/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyreference_api><span>API引用</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyscript-debug-li>
-<a href=/quickrunner/instructor/ready/script-debug/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyscript-debug><span>脚本调试</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadycorrelation-li>
-<a href=/quickrunner/instructor/ready/correlation/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadycorrelation><span>关联机制</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyscript-record-li>
-<a href=/quickrunner/instructor/ready/script-record/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyscript-record><span>脚本录制</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunnerinstructorreadyparameter-li>
-<a href=/quickrunner/instructor/ready/parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunnerinstructorreadyparameter><span>参数化</span></a>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparecreat-li>
+<a href=/quickrunner/user-guide/prepare/creat/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparecreat><span>打开&新建项目</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparescript-edit-li>
+<a href=/quickrunner/user-guide/prepare/script-edit/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparescript-edit><span>脚本编写</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparehook-li>
+<a href=/quickrunner/user-guide/prepare/hook/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparehook><span>hook机制</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparereference_case-li>
+<a href=/quickrunner/user-guide/prepare/reference_case/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparereference_case><span>用例引用</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparereference_api-li>
+<a href=/quickrunner/user-guide/prepare/reference_api/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparereference_api><span>API引用</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparescript-debug-li>
+<a href=/quickrunner/user-guide/prepare/script-debug/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparescript-debug><span>脚本调试</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparecorrelation-li>
+<a href=/quickrunner/user-guide/prepare/correlation/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparecorrelation><span>关联机制</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparescript-record-li>
+<a href=/quickrunner/user-guide/prepare/script-record/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparescript-record><span>脚本录制</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunneruser-guideprepareparameter-li>
+<a href=/quickrunner/user-guide/prepare/parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunneruser-guideprepareparameter><span>参数化</span></a>
 <ul class="ul-4 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyparametershare_parameter-li>
-<a href=/quickrunner/instructor/ready/parameter/share_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyparametershare_parameter><span>参数共享机制</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyparameterdriver_parameter-li>
-<a href=/quickrunner/instructor/ready/parameter/driver_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyparameterdriver_parameter><span>参数驱动机制</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyparametercalculate_parameter-li>
-<a href=/quickrunner/instructor/ready/parameter/calculate_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyparametercalculate_parameter><span>动态运算逻辑</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyparameterfunction_parameter-li>
-<a href=/quickrunner/instructor/ready/parameter/function_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyparameterfunction_parameter><span>自定义函数</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyparameterheader-li>
-<a href=/quickrunner/instructor/ready/parameter/header/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyparameterheader><span>全局请求头</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyparameterlocal-li>
-<a href=/quickrunner/instructor/ready/parameter/local/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyparameterlocal><span>局部变量</span></a>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareparametershare_parameter-li>
+<a href=/quickrunner/user-guide/prepare/parameter/share_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareparametershare_parameter><span>参数共享机制</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareparameterdriver_parameter-li>
+<a href=/quickrunner/user-guide/prepare/parameter/driver_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareparameterdriver_parameter><span>参数驱动机制</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareparametercalculate_parameter-li>
+<a href=/quickrunner/user-guide/prepare/parameter/calculate_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareparametercalculate_parameter><span>动态运算逻辑</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareparameterfunction_parameter-li>
+<a href=/quickrunner/user-guide/prepare/parameter/function_parameter/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareparameterfunction_parameter><span>自定义函数</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareparameterheader-li>
+<a href=/quickrunner/user-guide/prepare/parameter/header/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareparameterheader><span>全局请求头</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareparameterlocal-li>
+<a href=/quickrunner/user-guide/prepare/parameter/local/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareparameterlocal><span>局部变量</span></a>
 </li>
 </ul>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadycollection_point-li>
-<a href=/quickrunner/instructor/ready/collection_point/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadycollection_point><span>集合点</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadytransaction-li>
-<a href=/quickrunner/instructor/ready/transaction/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadytransaction><span>事务</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorreadyassert-check-li>
-<a href=/quickrunner/instructor/ready/assert-check/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorreadyassert-check><span>断言&检查点</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparecollection_point-li>
+<a href=/quickrunner/user-guide/prepare/collection_point/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparecollection_point><span>集合点</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guidepreparetransaction-li>
+<a href=/quickrunner/user-guide/prepare/transaction/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guidepreparetransaction><span>事务</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideprepareassert-check-li>
+<a href=/quickrunner/user-guide/prepare/assert-check/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideprepareassert-check><span>断言&检查点</span></a>
 </li>
 </ul>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunnerinstructorconfiguration-li>
-<a href=/quickrunner/instructor/configuration/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunnerinstructorconfiguration><span>配置压测</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunneruser-guideconfiguration-li>
+<a href=/quickrunner/user-guide/configuration/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunneruser-guideconfiguration><span>配置压测</span></a>
 <ul class="ul-3 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorconfigurationedit_configuration-li>
-<a href=/quickrunner/instructor/configuration/edit_configuration/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorconfigurationedit_configuration><span>运行模式配置</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructorconfigurationdevice_info-li>
-<a href=/quickrunner/instructor/configuration/device_info/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructorconfigurationdevice_info><span>检测被测系统</span></a>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideconfigurationedit_configuration-li>
+<a href=/quickrunner/user-guide/configuration/edit_configuration/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideconfigurationedit_configuration><span>运行模式配置</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideconfigurationdevice_info-li>
+<a href=/quickrunner/user-guide/configuration/device_info/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideconfigurationdevice_info><span>检测被测系统</span></a>
 </li>
 </ul>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunnerinstructoranalysis-li>
-<a href=/quickrunner/instructor/analysis/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunnerinstructoranalysis><span>结果展示</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section with-child collapse" id=m-quickrunneruser-guideanalysis-li>
+<a href=/quickrunner/user-guide/analysis/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-quickrunneruser-guideanalysis><span>结果展示</span></a>
 <ul class="ul-3 foldable">
-<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructoranalysisindicator_display-li>
-<a href=/quickrunner/instructor/analysis/indicator_display/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructoranalysisindicator_display><span>压测指标展示</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructoranalysisindicator_system-li>
-<a href=/quickrunner/instructor/analysis/indicator_system/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructoranalysisindicator_system><span>系统性能指标</span></a>
-</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunnerinstructoranalysisindicator_erro-li>
-<a href=/quickrunner/instructor/analysis/indicator_erro/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerinstructoranalysisindicator_erro><span>错误日志</span></a>
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideanalysisindicator_display-li>
+<a href=/quickrunner/user-guide/analysis/indicator_display/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideanalysisindicator_display><span>压测指标展示</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideanalysisindicator_system-li>
+<a href=/quickrunner/user-guide/analysis/indicator_system/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideanalysisindicator_system><span>系统性能指标</span></a>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-quickrunneruser-guideanalysisindicator_erro-li>
+<a href=/quickrunner/user-guide/analysis/indicator_erro/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunneruser-guideanalysisindicator_erro><span>错误日志</span></a>
 </li>
 </ul>
 </li>
 </ul>
+</li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-quickrunnerfaq-li>
+<a href=/quickrunner/faq/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-quickrunnerfaq><span>❓常见问题</span></a>
 </li>
 </ul>
 </li>
@@ -193,32 +185,61 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#案例介绍>案例介绍</a></li>
+<li><a href=#测试场景设计>测试场景设计</a></li>
+<li><a href=#测试前准备>测试前准备</a>
+<ul>
+<li></li>
+</ul>
+</li>
+<li><a href=#总结>总结</a></li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
 <ol class=breadcrumb>
 <li class=breadcrumb-item>
-<a href=https://httprunner.com/quickrunner/>QuickRunner 🚀</a>
+<a href=https://httprunner.com/quickrunner/>QuickRunner</a>
 </li>
 <li class="breadcrumb-item active" aria-current=page>
-<a href=https://httprunner.com/quickrunner/quickstart/>快速上手</a>
+<a href=https://httprunner.com/quickrunner/quickstart/>🚀 快速上手</a>
 </li>
 </ol>
 </nav>
 <div class=td-content>
-<h1>快速上手</h1>
-<div class=lead>为了方便您在短时间内对 QuickRunner 有一个整体的感知，这里我们将为您展示一套基本的测试流程，方便您后续参考。</div>
+<h1>🚀 快速上手</h1>
+<div class=lead>一个实例带你快速上手 QuickRunner</div>
 <header class=article-meta>
 </header>
-<div class=section-index>
-<hr class=panel-line>
-<div class=entry>
-<h5>
-<a href=/quickrunner/quickstart/quickstart/>实例case</a>
-</h5>
-<p>一个实例带你快速上手 QuickRunner</p>
-</div>
-</div>
+<p>本文将通过一个简单的示例来展示 QuickRunner 的核心功能使用方法。</p>
+<h2 id=案例介绍>案例介绍</h2>
+<p>为了降低案例实践的上手门槛，我们挑选了一个公网可访问的接口服务网站 <a href=https://httpbin.org/>http-bin</a> 作为被测对象。<code>http-bin</code> 是一个使用 Python + Flask 编写的 HTTP HTTP Request & Response Service。该服务主要用于测试 HTTP 库，你可以向它发送请求，然后它会按照指定的规则将你的请求返回。
+httpbin 支持HTTP/HTTPS，可以很好地满足我们的演示需求。</p>
+<p>为了更直观，我们将基本的测试流程分为以下几步：</p>
+<h2 id=测试场景设计>测试场景设计</h2>
+<p>成功的负载测试需要设计一个全面的测试计划。清晰、明确的测试计划可确保您开发的 QuickRunner 场景能够实现您的负载测试目标。</p>
+<h2 id=测试前准备>测试前准备</h2>
+<h4 id=工具安装>工具安装</h4>
+<p>根据不同的系统选择对应的版本工具进行下载安装。安装成功后，打开工具，界面如下图所示：</p>
+<img src=/image/QuickRunner/QuickRunner.png alt=QuickRunner width=800>
+<h4 id=脚本准备>脚本准备</h4>
+<p>在测试之前，我们需要对场景脚本进行录制或者脚本编写。</p>
+<img src=/image/QuickRunner/ready.png alt=QuickRunner width=800>
+<h4 id=脚本调试>脚本调试</h4>
+<p>当脚本设置好后，点击界面右上方的【调试】按钮可对脚本进行调试，以此来检查脚本是否可以跑通。</p>
+<img src=/image/QuickRunner/debug.png alt=QuickRunner width=800>
+<h4 id=压测执行>压测执行</h4>
+<p>开启压测之前，您可在【压测配置】页面，设置压测配置，定义运行模式。设置结束后，点击【启动】按钮，开启压测。</p>
+<img src=/image/QuickRunner/demo-pressing.png alt=QuickRunner width=800>
+<h4 id=结果展示>结果展示</h4>
+<p>您可在【压测任务】界面查看压测过程中的所有指标数据。</p>
+<img src=/image/QuickRunner/demo-result.png alt=QuickRunner width=800>
+<h2 id=总结>总结</h2>
+<p>到此为止，QuickRunner 的全套基本测试流程就介绍完了，您可以根据本文中的流程，快速开启压测。</p>
+<p>当然，QuickRunner 的功能不止于此，如需挖掘 QuickRunner 的更多特性，实现更复杂场景的自动化测试需求，可继续阅读后续文档。</p>
 </div>
 </main>
 </div>
