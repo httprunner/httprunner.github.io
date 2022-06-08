@@ -20,11 +20,11 @@
 <meta property="og:description" content="使用主流 API 工具转换生成测试用例">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/gen-tests/convert/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-25T22:13:45+08:00">
+<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
 <meta itemprop=name content="转换生成">
 <meta itemprop=description content="使用主流 API 工具转换生成测试用例">
-<meta itemprop=dateModified content="2022-05-25T22:13:45+08:00">
-<meta itemprop=wordCount content="89">
+<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
+<meta itemprop=wordCount content="313">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="转换生成">
 <meta name=twitter:description content="使用主流 API 工具转换生成测试用例">
@@ -245,6 +245,19 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#将输入转化为-jsonyamlpytestgotest>将输入转化为 JSON/YAML/pytest/gotest</a></li>
+<li><a href=#快速上手>快速上手</a>
+<ul>
+<li><a href=#指定输出类型>指定输出类型</a></li>
+<li><a href=#指定输出目录>指定输出目录</a></li>
+<li><a href=#指定全局修改配置文件>指定全局修改配置文件</a></li>
+</ul>
+</li>
+<li><a href=#注意事项>注意事项</a></li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -269,6 +282,11 @@ Versions
 <header class=article-meta>
 </header>
 <h2 id=将输入转化为-jsonyamlpytestgotest>将输入转化为 JSON/YAML/pytest/gotest</h2>
+<p>使用过 HttpRunner v3.0 的用户应该对 <code>httprunner har2case</code> 和 <code>httprunner make</code> 指令不陌生，这两个指令可以非常方便地进行测试用例的生成与转换，前者用于将 HAR 包转换为 JSON/YAML/pytest 测试用例，后者则用于将 JSON/YAML 测试用例转换为 pytest 形态。</p>
+<p>在 v4.0 版本中，HttpRunner 将实现一套更为灵活的测试用例转换机制，并且将所有的转换功能都集中在 <code>hrp convert</code> 一个指令中。用户可以通过指定选项将将输入转换为各种类型的测试用例，HttpRunner 的转换功能将不仅仅局限于支持 Postman、Swagger 等工具导出的工程文件到 HttpRunner 测试用例的转换，还会支持 curl、Apache ab 等指令到测试用例的转换，甚至是会支持测试用例的不同形态之间的相互转换。</p>
+<p>本文将介绍 HttpRunner v4.0 用例转换功能的基本使用方式以及注意事项，从而可以方便用户快速上手。此外，为了帮助大家更好地理解用例转换的原理，本文还会介绍 <code>hrp convert</code> 指令转换过程的具体流程，最后会介绍 <code>hrp convert</code> 指令当前的开发进度。</p>
+<h2 id=快速上手>快速上手</h2>
+<p>通过执行 <code>hrp convert -h</code> 可以查询该指令的功能简介、用法和各个选项的介绍：</p>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>$ hrp convert -h
 convert to JSON/YAML/gotest/pytest testcases
 
@@ -287,7 +305,53 @@ Flags:
 Global Flags:
       --log-json           set log to json format
   -l, --log-level string   set log level (default &#34;INFO&#34;)
-</code></pre></div>
+</code></pre></div><p><code>hrp convert</code> 各个选项的详细说明和使用示例如下：</p>
+<h3 id=指定输出类型>指定输出类型</h3>
+<p><code>--to-json/--to-yaml/--to-gotest/--to-pytest</code> 用于将输入转化为对应目标形态的测试用例，四个选项中最多只能指定一个。</p>
+<p>例如，将输入的 HAR 文件转换为 pytest 测试用例：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#8f5902;font-style:italic># 将输入的 demo.har 转换为 pytest 测试用例 demo_test.py</span>
+$ hrp convert demo.har --to-pytest
+</code></pre></div><p>如果不指定该选项，则默认会将输入转换为 JSON 形态的测试用例，例如：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#8f5902;font-style:italic># 默认会将输入的 demo.har 转换为 JSON 测试用例 demo_test.json</span>
+$ hrp convert demo.har
+</code></pre></div><h3 id=指定输出目录>指定输出目录</h3>
+<p><code>--output-dir</code> 后接测试用例的期望输出目录的路径，用于将转换生成的测试用例输出到对应的文件夹，需要注意该路径必须是存在且合法的，例如：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#8f5902;font-style:italic># 创建输出目录</span>
+$ mkdir -p testcase/from/postman
+
+<span style=color:#8f5902;font-style:italic># 将输入的 postman_collection.json 转换为 YAML 测试用例 postman_collection_test.yaml，并导出到 testcase/from/postman 目录下</span>
+$ hrp convert postman_collection.json --to-yaml --output-dir testcase/from/postman
+</code></pre></div><h3 id=指定全局修改配置文件>指定全局修改配置文件</h3>
+<p><code>--profile</code> 后接 profile 配置文件的路径，该文件的后缀可以为 .json/.yaml/.yml，其作用是在转换过程中对测试用例的各个步骤进行全局修改，目前支持修改输入中的 Headers 和 Cookies 信息，并且支持替换（不存在则会创建）以及覆盖两种修改模式，下面给出这两种修改模式的 profile 配置文件示例：</p>
+<ul>
+<li>profile.yaml：根据 profile 替换指定的 Headers 和 Cookies 信息</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Header1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;this header will be created or updated&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>cookies</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Cookie1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;this cookie will be created or updated&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><ul>
+<li>profile_override.yaml：根据 profile 覆盖原有的 Headers 和 Cookies 信息</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>override</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#204a87;font-weight:700>true</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Header1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;all original headers will be overridden&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>cookies</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Cookie1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;all original cookies will be overridden&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><p>创建了以上的两个 profile 配置文件后，我们可以使用 <code>--profile</code> 选项指定配置文件来进行全局修改，例如：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#8f5902;font-style:italic># 将输入的 demo.har 转化为 json 测试用例 demo_test.json，并进行全局替换</span>
+$ hrp convert demo.har --profile profile.yaml
+
+<span style=color:#8f5902;font-style:italic># 将输入的 demo.har 转化为 pytest 测试用例 demo_test.py，并进行全局覆盖</span>
+$ hrp convert demo.har --to-pytest --profile profile_override.yaml
+</code></pre></div><h2 id=注意事项>注意事项</h2>
+<ol>
+<li>输出的测试用例文件名格式为 <code>输入文件名称（不带后缀）</code> + <code>_test</code> + <code>.json/.yaml/.go/.py 后缀</code>，如果该文件已经存在则会进行覆盖</li>
+<li><code>hrp convert</code> 可以自动识别输入类型，因此不需要通过选项来手动指定输入类型，如遇到输入类型不支持、加载失败或转换失败的情况，则会输出错误日志并跳过，不会影响其他转换过程的正常进行</li>
+<li>在 profile 文件中，指定 <code>override</code> 字段为 <code>false/true</code> 可以选择全局修改模式为替换/覆盖。需要注意的是，如果不指定该字段则默认的全局修改模式为替换模式</li>
+<li>输入为 JSON/YAML 测试用例时，向前兼容 HttpRunner v2.0/v3.0 版本的测试用例，输出则统一采用 HttpRunner v4.0 版本的风格</li>
+<li>在进行测试用例的不同形态之间的相互转换时，如果输入测试用例的类型与输出的类型相同，所指定的 <code>--output-dir</code> 和 <code>--profile</code> 选项仍然生效</li>
+</ol>
 </div>
 </main>
 </div>

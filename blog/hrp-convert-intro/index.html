@@ -22,26 +22,26 @@
 在 v4.0 版本中，HttpRunner 将实现一套更为灵活的测试用例转换机制，并且将所有的转换功能都集中在 hrp convert 一个指令中。用户可以通过指定选项将将输入转换为各种类型的测试用例，HttpRunner 的转换功能将不仅仅局限于支持 Postman、Swagger 等工具导出的工程文件到 HttpRunner 测试用例的转换，还会支持 curl、Apache ab 等指令到测试用例的转换，甚至是会支持测试用例的不同形态之间的相互转换。
 本文将介绍 HttpRunner v4.0 用例转换功能的基本使用方式以及注意事项，从而可以方便用户快速上手。此外，为了帮助大家更好地理解用例转换的原理，本文还会介绍 hrp convert 指令转换过程的具体流程，最后会介绍 hrp convert 指令当前的开发进度。
 快速上手 通过执行 hrp convert -h 可以查询该指令的功能简介、用法和各个选项的介绍：
-$ hrp convert -h convert to JSON/YAML/gotest/pytest testcases Usage: hrp convert $path... [flags] Flags: -h, --help help for convert -d, --output-dir string specify output directory, default to the same dir with har file -p, --profile string specify profile path to override headers (except for auto-generated headers) and cookies --to-gotest convert to gotest scripts (TODO) --to-json convert to JSON scripts (default) --to-pytest convert to pytest scripts --to-yaml convert to YAML scripts Global Flags: --log-json set log to json format -l, --log-level string set log level (default &#34;INFO&#34;) hrp convert 各个选项的详细说明和使用示例如下：">
+$ hrp convert -h convert to JSON/YAML/gotest/pytest testcases Usage: hrp convert $path... [flags] Flags: -h, --help help for convert -d, --output-dir string specify output directory, default to the same dir with har file -p, --profile string specify profile path to override headers (except for auto-generated headers) and cookies --to-gotest convert to gotest scripts (TODO) --to-json convert to JSON scripts (default true) --to-pytest convert to pytest scripts --to-yaml convert to YAML scripts Global Flags: --log-json set log to json format -l, --log-level string set log level (default &#34;INFO&#34;) hrp convert 各个选项的详细说明和使用示例如下：">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/blog/hrp-convert-intro/"><meta property="article:section" content="blog">
 <meta property="article:published_time" content="2022-06-02T00:00:00+00:00">
-<meta property="article:modified_time" content="2022-06-03T08:51:46+08:00">
+<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
 <meta itemprop=name content="HttpRunner v4.0 用例转换功能介绍">
 <meta itemprop=description content="引言 使用过 HttpRunner v3.0 的用户应该对 httprunner har2case 和 httprunner make 指令不陌生，这两个指令可以非常方便地进行测试用例的生成与转换，前者用于将 HAR 包转换为 JSON/YAML/pytest 测试用例，后者则用于将 JSON/YAML 测试用例转换为 pytest 形态。
 在 v4.0 版本中，HttpRunner 将实现一套更为灵活的测试用例转换机制，并且将所有的转换功能都集中在 hrp convert 一个指令中。用户可以通过指定选项将将输入转换为各种类型的测试用例，HttpRunner 的转换功能将不仅仅局限于支持 Postman、Swagger 等工具导出的工程文件到 HttpRunner 测试用例的转换，还会支持 curl、Apache ab 等指令到测试用例的转换，甚至是会支持测试用例的不同形态之间的相互转换。
 本文将介绍 HttpRunner v4.0 用例转换功能的基本使用方式以及注意事项，从而可以方便用户快速上手。此外，为了帮助大家更好地理解用例转换的原理，本文还会介绍 hrp convert 指令转换过程的具体流程，最后会介绍 hrp convert 指令当前的开发进度。
 快速上手 通过执行 hrp convert -h 可以查询该指令的功能简介、用法和各个选项的介绍：
-$ hrp convert -h convert to JSON/YAML/gotest/pytest testcases Usage: hrp convert $path... [flags] Flags: -h, --help help for convert -d, --output-dir string specify output directory, default to the same dir with har file -p, --profile string specify profile path to override headers (except for auto-generated headers) and cookies --to-gotest convert to gotest scripts (TODO) --to-json convert to JSON scripts (default) --to-pytest convert to pytest scripts --to-yaml convert to YAML scripts Global Flags: --log-json set log to json format -l, --log-level string set log level (default &#34;INFO&#34;) hrp convert 各个选项的详细说明和使用示例如下："><meta itemprop=datePublished content="2022-06-02T00:00:00+00:00">
-<meta itemprop=dateModified content="2022-06-03T08:51:46+08:00">
-<meta itemprop=wordCount content="497">
+$ hrp convert -h convert to JSON/YAML/gotest/pytest testcases Usage: hrp convert $path... [flags] Flags: -h, --help help for convert -d, --output-dir string specify output directory, default to the same dir with har file -p, --profile string specify profile path to override headers (except for auto-generated headers) and cookies --to-gotest convert to gotest scripts (TODO) --to-json convert to JSON scripts (default true) --to-pytest convert to pytest scripts --to-yaml convert to YAML scripts Global Flags: --log-json set log to json format -l, --log-level string set log level (default &#34;INFO&#34;) hrp convert 各个选项的详细说明和使用示例如下："><meta itemprop=datePublished content="2022-06-02T00:00:00+00:00">
+<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
+<meta itemprop=wordCount content="499">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="HttpRunner v4.0 用例转换功能介绍">
 <meta name=twitter:description content="引言 使用过 HttpRunner v3.0 的用户应该对 httprunner har2case 和 httprunner make 指令不陌生，这两个指令可以非常方便地进行测试用例的生成与转换，前者用于将 HAR 包转换为 JSON/YAML/pytest 测试用例，后者则用于将 JSON/YAML 测试用例转换为 pytest 形态。
 在 v4.0 版本中，HttpRunner 将实现一套更为灵活的测试用例转换机制，并且将所有的转换功能都集中在 hrp convert 一个指令中。用户可以通过指定选项将将输入转换为各种类型的测试用例，HttpRunner 的转换功能将不仅仅局限于支持 Postman、Swagger 等工具导出的工程文件到 HttpRunner 测试用例的转换，还会支持 curl、Apache ab 等指令到测试用例的转换，甚至是会支持测试用例的不同形态之间的相互转换。
 本文将介绍 HttpRunner v4.0 用例转换功能的基本使用方式以及注意事项，从而可以方便用户快速上手。此外，为了帮助大家更好地理解用例转换的原理，本文还会介绍 hrp convert 指令转换过程的具体流程，最后会介绍 hrp convert 指令当前的开发进度。
 快速上手 通过执行 hrp convert -h 可以查询该指令的功能简介、用法和各个选项的介绍：
-$ hrp convert -h convert to JSON/YAML/gotest/pytest testcases Usage: hrp convert $path... [flags] Flags: -h, --help help for convert -d, --output-dir string specify output directory, default to the same dir with har file -p, --profile string specify profile path to override headers (except for auto-generated headers) and cookies --to-gotest convert to gotest scripts (TODO) --to-json convert to JSON scripts (default) --to-pytest convert to pytest scripts --to-yaml convert to YAML scripts Global Flags: --log-json set log to json format -l, --log-level string set log level (default &#34;INFO&#34;) hrp convert 各个选项的详细说明和使用示例如下：">
+$ hrp convert -h convert to JSON/YAML/gotest/pytest testcases Usage: hrp convert $path... [flags] Flags: -h, --help help for convert -d, --output-dir string specify output directory, default to the same dir with har file -p, --profile string specify profile path to override headers (except for auto-generated headers) and cookies --to-gotest convert to gotest scripts (TODO) --to-json convert to JSON scripts (default true) --to-pytest convert to pytest scripts --to-yaml convert to YAML scripts Global Flags: --log-json set log to json format -l, --log-level string set log level (default &#34;INFO&#34;) hrp convert 各个选项的详细说明和使用示例如下：">
 <link rel=preload href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css as=style>
 <link href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css rel=stylesheet integrity>
 <script src=https://code.jquery.com/jquery-3.6.0.min.js integrity=sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK crossorigin=anonymous></script>
@@ -186,20 +186,20 @@ Versions
 convert to JSON/YAML/gotest/pytest testcases
 
 Usage:
-hrp convert $path... [flags]
+  hrp convert $path... [flags]
 
 Flags:
--h, --help                help for convert
--d, --output-dir string   specify output directory, default to the same dir with har file
--p, --profile string      specify profile path to override headers (except for auto-generated headers) and cookies
---to-gotest           convert to gotest scripts (TODO)
---to-json             convert to JSON scripts (default)
---to-pytest           convert to pytest scripts
---to-yaml             convert to YAML scripts
+  -h, --help                help for convert
+  -d, --output-dir string   specify output directory, default to the same dir with har file
+  -p, --profile string      specify profile path to override headers (except for auto-generated headers) and cookies
+      --to-gotest           convert to gotest scripts (TODO)
+      --to-json             convert to JSON scripts (default true)
+      --to-pytest           convert to pytest scripts
+      --to-yaml             convert to YAML scripts
 
 Global Flags:
---log-json           set log to json format
--l, --log-level string   set log level (default &#34;INFO&#34;)
+      --log-json           set log to json format
+  -l, --log-level string   set log level (default &#34;INFO&#34;)
 </code></pre></div><p><code>hrp convert</code> 各个选项的详细说明和使用示例如下：</p>
 <h3 id=指定输出类型>指定输出类型</h3>
 <p><code>--to-json/--to-yaml/--to-gotest/--to-pytest</code> 用于将输入转化为对应目标形态的测试用例，四个选项中最多只能指定一个。</p>
@@ -218,12 +218,16 @@ $ mkdir -p testcase/from/postman
 $ hrp convert postman_collection.json --to-yaml --output-dir testcase/from/postman
 </code></pre></div><h3 id=指定全局修改配置文件>指定全局修改配置文件</h3>
 <p><code>--profile</code> 后接 profile 配置文件的路径，该文件的后缀可以为 .json/.yaml/.yml，其作用是在转换过程中对测试用例的各个步骤进行全局修改，目前支持修改输入中的 Headers 和 Cookies 信息，并且支持替换（不存在则会创建）以及覆盖两种修改模式，下面给出这两种修改模式的 profile 配置文件示例：</p>
-<p>profile.yaml：根据 profile 替换指定的 Headers 和 Cookies 信息</p>
+<ul>
+<li>profile.yaml：根据 profile 替换指定的 Headers 和 Cookies 信息</li>
+</ul>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
 </span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Header1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;this header will be created or updated&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
 </span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>cookies</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
 </span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Cookie1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;this cookie will be created or updated&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
-</span></code></pre></div><p>profile_override.yaml：根据 profile 覆盖原有的 Headers 和 Cookies 信息</p>
+</span></code></pre></div><ul>
+<li>profile_override.yaml：根据 profile 覆盖原有的 Headers 和 Cookies 信息</li>
+</ul>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>override</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#204a87;font-weight:700>true</span><span style=color:#f8f8f8;text-decoration:underline>
 </span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
 </span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>Header1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;all original headers will be overridden&#34;</span><span style=color:#f8f8f8;text-decoration:underline>

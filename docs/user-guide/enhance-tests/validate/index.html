@@ -20,11 +20,11 @@
 <meta property="og:description" content="针对 API 响应结果进行预期结果校验">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/enhance-tests/validate/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
 <meta itemprop=name content="结果校验（validate）">
 <meta itemprop=description content="针对 API 响应结果进行预期结果校验">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="0">
+<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
+<meta itemprop=wordCount content="314">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="结果校验（validate）">
 <meta name=twitter:description content="针对 API 响应结果进行预期结果校验">
@@ -245,6 +245,13 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#概念>概念</a></li>
+<li><a href=#示例>示例</a></li>
+<li><a href=#内置结果校验函数>内置结果校验函数</a></li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -268,6 +275,159 @@ Versions
 <div class=lead>针对 API 响应结果进行预期结果校验</div>
 <header class=article-meta>
 </header>
+<h2 id=概念>概念</h2>
+<p>结果校验（又称断言）是测试用例中的重要组成部分，可以对测试用例在运行过程中是否得到了预期结果进行校验，例如对响应状态码进行断言，以及对响应 JSON 中的具体字段进行断言。</p>
+<p>目前 HttpRunner 支持两种匹配目标参数的方式，并且内置了丰富的结果检验函数，可以实现满足众多的测试场景需求。</p>
+<p>HttpRunner v4.0 结果校验部分的数据结构如下：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#204a87;font-weight:700>type</span> <span style=color:#000>Validator</span> <span style=color:#204a87;font-weight:700>struct</span> <span style=color:#000;font-weight:700>{</span>
+	<span style=color:#000>Check</span>   <span style=color:#204a87;font-weight:700>string</span>      <span style=color:#4e9a06>`json:&#34;check&#34; yaml:&#34;check&#34;`</span>
+	<span style=color:#000>Assert</span>  <span style=color:#204a87;font-weight:700>string</span>      <span style=color:#4e9a06>`json:&#34;assert&#34; yaml:&#34;assert&#34;`</span>
+	<span style=color:#000>Expect</span>  <span style=color:#204a87;font-weight:700>interface</span><span style=color:#000;font-weight:700>{}</span> <span style=color:#4e9a06>`json:&#34;expect&#34; yaml:&#34;expect&#34;`</span>
+	<span style=color:#000>Message</span> <span style=color:#204a87;font-weight:700>string</span>      <span style=color:#4e9a06>`json:&#34;msg,omitempty&#34; yaml:&#34;msg,omitempty&#34;`</span>
+<span style=color:#000;font-weight:700>}</span>
+</code></pre></div><p>从上面的数据结构可以看出，结果校验内容包含了 4 个字段，分别是字段提取表达式、断言函数、预期结果以及提示信息：</p>
+<ul>
+<li>字段提取表达式：用于提取目标字段用作断言函数的输入，支持 jmespath 表达式和正则表达式（regex）两种提取方式，填写方式请参考<a href=https://httprunner.com/docs/user-guide/enhance-tests/extract/>参数提取（extract）</a>章节</li>
+<li>断言函数：顾名思义，就是用于对目标字段与预期结果是否满足相等、大小、包含、被包含等关系进行断言的函数，目前支持内置函数，不支持自定义拓展</li>
+<li>预期结果：指定断言的预期结果，用作断言函数的另一个输入</li>
+<li>提示信息：当前断言操作对应的提示信息，该字段为选填</li>
+</ul>
+<h2 id=示例>示例</h2>
+<p>下面以 YAML 测试用例为例，展示结果校验功能的写法示例：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>config</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>validation demo</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span><span style=color:#204a87;font-weight:700>teststeps</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span>- <span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>get httpbin</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>request</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>method</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>GET</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>url</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>https://www.httpbin.org</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>validate</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span>- <span style=color:#204a87;font-weight:700>check</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>status_code           </span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#8f5902;font-style:italic># target field, support both jmespath and regex</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>assert</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>eq                   </span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#8f5902;font-style:italic># assertion method, you can use builtin method or custom defined function</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>expect</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>200</span><span style=color:#f8f8f8;text-decoration:underline>                   </span><span style=color:#8f5902;font-style:italic># expected value, supposed to match target field</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>message</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>check status code   </span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#8f5902;font-style:italic># note message, optional</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><h2 id=内置结果校验函数>内置结果校验函数</h2>
+<p><code>assert</code> 部分支持填写的内置结果校验函数包括如下内容：</p>
+<table>
+<thead>
+<tr>
+<th><code>assert</code></th>
+<th>Description</th>
+<th>A(check), B(expect)</th>
+<th>examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>eq</code>, <code>equals</code>, <code>equal</code></td>
+<td>value is equal</td>
+<td>A == B</td>
+<td>9 eq 9</td>
+</tr>
+<tr>
+<td><code>lt</code>, <code>less_than</code></td>
+<td>less than</td>
+<td>A &lt; B</td>
+<td>7 lt 8</td>
+</tr>
+<tr>
+<td><code>le</code>, <code>less_or_equals</code></td>
+<td>less than or equals</td>
+<td>A &lt;= B</td>
+<td>7 le 8, 8 le 8</td>
+</tr>
+<tr>
+<td><code>gt</code>, <code>greater_than</code></td>
+<td>greater than</td>
+<td>A > B</td>
+<td>8 gt 7</td>
+</tr>
+<tr>
+<td><code>ge</code>, <code>greater_or_equals</code></td>
+<td>greater than or equals</td>
+<td>A >= B</td>
+<td>8 ge 7, 8 ge 8</td>
+</tr>
+<tr>
+<td><code>ne</code>, <code>not_equal</code></td>
+<td>not equals</td>
+<td>A != B</td>
+<td>6 ne 9</td>
+</tr>
+<tr>
+<td><code>str_eq</code>, <code>string_equals</code></td>
+<td>string equals</td>
+<td>str(A) == str(B)</td>
+<td>123 str_eq &lsquo;123&rsquo;</td>
+</tr>
+<tr>
+<td><code>len_eq</code>, <code>length_equals</code>, <code>length_equal</code></td>
+<td>length equals</td>
+<td>len(A) == B</td>
+<td>&lsquo;abc&rsquo; len_eq 3, [1,2] len_eq 2</td>
+</tr>
+<tr>
+<td><code>len_gt</code>, <code>count_gt</code>, <code>length_greater_than</code></td>
+<td>length greater than</td>
+<td>len(A) > B</td>
+<td>&lsquo;abc&rsquo; len_gt 2, [1,2,3] len_gt 2</td>
+</tr>
+<tr>
+<td><code>len_ge</code>, <code>count_ge</code>, <code>length_greater_or_equals</code></td>
+<td>length greater than or equals</td>
+<td>len(A) >= B</td>
+<td>&lsquo;abc&rsquo; len_ge 3, [1,2,3] len_gt 3</td>
+</tr>
+<tr>
+<td><code>len_lt</code>, <code>count_lt</code>, <code>length_less_than</code></td>
+<td>length less than</td>
+<td>len(A) &lt; B</td>
+<td>&lsquo;abc&rsquo; len_lt 4, [1,2,3] len_lt 4</td>
+</tr>
+<tr>
+<td><code>len_le</code>, <code>count_le</code>, <code>length_less_or_equals</code></td>
+<td>length less than or equals</td>
+<td>len(A) &lt;= B</td>
+<td>&lsquo;abc&rsquo; len_le 3, [1,2,3] len_le 3</td>
+</tr>
+<tr>
+<td><code>contains</code></td>
+<td>contains</td>
+<td>[1, 2] contains 1</td>
+<td>&lsquo;abc&rsquo; contains &lsquo;a&rsquo;, [1,2,3] len_lt 4</td>
+</tr>
+<tr>
+<td><code>contained_by</code></td>
+<td>contained by</td>
+<td>A in B</td>
+<td>&lsquo;a&rsquo; contained_by &lsquo;abc&rsquo;, 1 contained_by [1,2]</td>
+</tr>
+<tr>
+<td><code>type_match</code></td>
+<td>A and B are in the same type</td>
+<td>type(A) == type(B)</td>
+<td>123 type_match 1</td>
+</tr>
+<tr>
+<td><code>regex_match</code></td>
+<td>regex matches</td>
+<td>re.match(B, A)</td>
+<td>&lsquo;abcdef&rsquo; regex_match &lsquo;a\w+d&rsquo;</td>
+</tr>
+<tr>
+<td><code>startswith</code></td>
+<td>starts with</td>
+<td>A.startswith(B) is True</td>
+<td>&lsquo;abc&rsquo; startswith &lsquo;ab&rsquo;</td>
+</tr>
+<tr>
+<td><code>endswith</code></td>
+<td>ends with</td>
+<td>A.endswith(B) is True</td>
+<td>&lsquo;abc&rsquo; endswith &lsquo;bc&rsquo;</td>
+</tr>
+</tbody>
+</table>
 </div>
 </main>
 </div>

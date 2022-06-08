@@ -20,11 +20,11 @@
 <meta property="og:description" content="手工编写 YAML/JSON/pytest/gotest 测试用例">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/gen-tests/write-cases/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-10T18:47:41+08:00">
+<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
 <meta itemprop=name content="手工编写">
 <meta itemprop=description content="手工编写 YAML/JSON/pytest/gotest 测试用例">
-<meta itemprop=dateModified content="2022-05-10T18:47:41+08:00">
-<meta itemprop=wordCount content="0">
+<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
+<meta itemprop=wordCount content="418">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="手工编写">
 <meta name=twitter:description content="手工编写 YAML/JSON/pytest/gotest 测试用例">
@@ -245,6 +245,27 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#通用概念介绍>通用概念介绍</a>
+<ul>
+<li><a href=#测试步骤teststep>测试步骤（teststep）</a></li>
+<li><a href=#测试用例testcase>测试用例（testcase）</a></li>
+<li><a href=#测试用例集testsuite>测试用例集（testsuite）</a></li>
+<li><a href=#项目根目录>项目根目录：</a></li>
+</ul>
+</li>
+<li><a href=#手工编写-yamljson-测试用例>手工编写 YAML/JSON 测试用例</a>
+<ul>
+<li><a href=#编写用例配置>编写用例配置</a></li>
+<li><a href=#编写测试步骤>编写测试步骤</a></li>
+<li><a href=#注意事项>注意事项</a></li>
+</ul>
+</li>
+<li><a href=#手工编写-pytest-测试用例>手工编写 pytest 测试用例</a></li>
+<li><a href=#手工编写-gotest-测试用例>手工编写 gotest 测试用例</a></li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -268,6 +289,314 @@ Versions
 <div class=lead>手工编写 YAML/JSON/pytest/gotest 测试用例</div>
 <header class=article-meta>
 </header>
+<h2 id=通用概念介绍>通用概念介绍</h2>
+<p>在介绍如何手工编写测试用例之前，首先介绍 HttpRunner 中的一些通用概念，理解这些概念对于手工编写测试用例至关重要，因为无论是哪种形态的测试用例，都是按照一定的规则来设计的。这些通用概念具体包含以下的内容：</p>
+<h3 id=测试步骤teststep>测试步骤（teststep）</h3>
+<p>测试步骤是测试用例的最小执行单元，测试用例是测试步骤的有序集合，对于接口测试来说，每一个测试步骤应该就对应一个具体的用户操作。HttpRunner 支持的测试步骤如下：</p>
+<table>
+<thead>
+<tr>
+<th>测试步骤类型</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>request</td>
+<td>用于发起 HTTP 请求的步骤类型</td>
+</tr>
+<tr>
+<td>api</td>
+<td>用于引用 API 的步骤类型</td>
+</tr>
+<tr>
+<td>testcase</td>
+<td>用于引用其他测试用例的步骤类型</td>
+</tr>
+<tr>
+<td>transaction</td>
+<td>用于定义一个事务</td>
+</tr>
+<tr>
+<td>rendezvous</td>
+<td>集合点</td>
+</tr>
+<tr>
+<td>think_time</td>
+<td>思考时间</td>
+</tr>
+<tr>
+<td>websocket</td>
+<td>用于发起 WebSocket 请求的步骤类型</td>
+</tr>
+</tbody>
+</table>
+<p>除了基本的测试步骤之外，部分测试步骤还可以进行增强，从而拓展更多功能，这一部分内容将在<a href=https://httprunner.com/docs/user-guide/enhance-tests/>增强测试用例</a>章节中进行详细介绍。</p>
+<table>
+<thead>
+<tr>
+<th>增强操作类型</th>
+<th>含义</th>
+<th>适用的测试步骤</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>variables</td>
+<td>局部变量</td>
+<td>通用</td>
+</tr>
+<tr>
+<td>setup_hooks</td>
+<td>前置函数</td>
+<td>request/api/websocket</td>
+</tr>
+<tr>
+<td>teardown_hooks</td>
+<td>后置函数</td>
+<td>request/api/websocket</td>
+</tr>
+<tr>
+<td>extract</td>
+<td>参数提取</td>
+<td>request/api/websocket</td>
+</tr>
+<tr>
+<td>validate</td>
+<td>结果校验</td>
+<td>request/api/websocket</td>
+</tr>
+<tr>
+<td>export</td>
+<td>导出变量</td>
+<td>testcase</td>
+</tr>
+</tbody>
+</table>
+<h3 id=测试用例testcase>测试用例（testcase）</h3>
+<p>从 2.0 版本开始，HttpRunner 开始对测试用例的概念进行进一步的明确，参考 wiki 上对于 <a href=https://en.wikipedia.org/wiki/Test_case>test case</a> 的定义：</p>
+<blockquote>
+<p>A test case is a specification of the inputs, execution conditions, testing procedure, and expected results that define a single test to be executed to achieve a particular software testing objective, such as to exercise a particular program path or to verify compliance with a specific requirement.</p>
+</blockquote>
+<p>概括下来，一条测试用例（testcase）应该是为了测试某个特定的功能逻辑而精心设计的，并且至少包含如下几点：</p>
+<ul>
+<li>明确的测试目的（achieve a particular software testing objective）</li>
+<li>明确的输入数据（inputs）</li>
+<li>明确的运行环境（execution conditions）</li>
+<li>明确的测试步骤描述（testing procedure）</li>
+<li>明确的预期结果（expected results）</li>
+</ul>
+<p>按照上述的测试用例定义，HttpRunner 的测试用例应该保证是完整并且可以独立运行的。</p>
+<p>从测试用例的组成结构来看，一个测试用例可以分为「测试脚本」和「测试数据」两部分：</p>
+<ul>
+<li>测试脚本：重点是描述测试的业务功能逻辑，包括预置条件、测试步骤、预期结果等，并且可以结合辅助函数（debugtalk.go/debugtalk.py）实现复杂的运算逻辑</li>
+<li>测试数据：重点是对应测试的业务数据逻辑，例如数据驱动文件中的定义的 UUID、用户名等等，以及环境配置文件中定义的 base_url 环境变量等等</li>
+</ul>
+<p>测试脚本与测试数据分离后，就可以比较方便地实现数据驱动测试，通过对测试脚本传入一组测试数据，实现同一业务功能在输入不同业务数据情况下的测试验证。那么测试数据是如何传入测试脚本中的呢？这就需要用到测试数据与测试脚本之间的桥梁——用例配置（config），测试脚本除了包含多个有序的测试步骤之外，还包含针对当前测试用例的用例配置项，HttpRunner 支持的用例配置项如下：</p>
+<table>
+<thead>
+<tr>
+<th>用例配置项名称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>verify</td>
+<td>客户端是否进行 SSL 校验（todo）</td>
+</tr>
+<tr>
+<td>base_url</td>
+<td>当前请求的基础 URL（deprecated in v4.1, moved to .env）</td>
+</tr>
+<tr>
+<td>headers</td>
+<td>定义测试用例级别的请求体</td>
+</tr>
+<tr>
+<td>environs</td>
+<td>配置环境变量（如果未指定则会从 .env 文件导入）</td>
+</tr>
+<tr>
+<td>variables</td>
+<td>定义测试用例级别的变量</td>
+</tr>
+<tr>
+<td>parameters</td>
+<td>配置参数驱动的数据源</td>
+</tr>
+<tr>
+<td>parameters_setting</td>
+<td>配置参数驱动的具体策略</td>
+</tr>
+<tr>
+<td>think_time</td>
+<td>配置思考时间的具体策略、超时时间限制等</td>
+</tr>
+<tr>
+<td>websocket</td>
+<td>配置 WebSocket 断开重连的最大次数和间隔等（todo）</td>
+</tr>
+<tr>
+<td>export</td>
+<td>导出当前测试用例中的变量</td>
+</tr>
+<tr>
+<td>weight</td>
+<td>性能测试过程中，分配给当前测试用例的虚拟用户权重</td>
+</tr>
+<tr>
+<td>path</td>
+<td>当前测试用例所在路径（通常不需要手工填写）</td>
+</tr>
+</tbody>
+</table>
+<h3 id=测试用例集testsuite>测试用例集（testsuite）</h3>
+<p>对于测试用例集的概念，同样参考 wiki 上对于 <a href=https://en.wikipedia.org/wiki/Test_suite>test suite</a> 的定义：</p>
+<blockquote>
+<p>a test suite, less commonly known as a validation suite, is a collection of test cases that are intended to be used to test a software program to show that it has some specified set of behaviors. A test suite often contains detailed instructions or goals for each collection of test cases and information on the system configuration to be used during testing. A group of test cases may also contain prerequisite states or steps, and descriptions of the following tests.</p>
+</blockquote>
+<p>从上面定义中可以看出，测试用例集是测试用例的无序集合，通俗来将，测试用例集就是「一堆」测试用例。对应地，HttpRunner 除了支持指定单个文件来运行某一测试用例，也支持指定多个文件或指定文件夹来运行一整个测试用例集。</p>
+<h3 id=项目根目录>项目根目录：</h3>
+<p>项目根目录是整个测试用例集的目录，测试用例中的相对路径（例如在测试步骤中引用 API 或测试用例的路径，或者在使用参数驱动功能时引用 CSV 文件的路径）都是基于项目根目录来进行引用的。在 HttpRunner v4.0 中，项目根目录以 proj.json 为锚，并且按照使用习惯，环境配置文件 .env，以及辅助函数的定义文件 debugtalk.py/debugtalk.go 通常也是放在项目根目录下的。</p>
+<h2 id=手工编写-yamljson-测试用例>手工编写 YAML/JSON 测试用例</h2>
+<p>YAML 和 JSON 是两种常用的定义结构化数据的格式，关于这两种格式的优劣是非常有争议的问题，下面首先从编写风格、功能多样性和解析效率几个方面进行一下对比：</p>
+<ul>
+<li>编写风格：YAML 必须使用空格来表示缩进，并且对空格具体数量没有要求，只需要相同层级左侧对齐即可，这种缩进风格简洁且易于阅读，针对同一测试用例，YAML 文件的篇幅通常要比带缩进的 JSON 文件简短很多，用户可以较快地把握整体结构，但是对于手动编写 YAML 测试用例的场景而言，则需要重点注意相同层级左侧对齐，否则很容易导致测试用例的加载错误。JSON 的编写风格则是频繁地使用 {} [] 和 &ldquo;"，对缩进并没有严格要求（习惯上还是采用良好的缩进风格来便于阅读），正是由于额外的符号过多，容易降低阅读和手工编写上的体验</li>
+<li>功能多样性：在功能方面，YAML 是 JSON 的超集，YAML 有许多 JSON 缺乏的附加功能，包括注释、可扩展数据类型、关系锚、不带引号的字符串等等，尤其是添加注释的功能在编写测试用例供他人阅读时尤为实用，而 JSON 只支持数值、字符串、布尔值、数组、对象和空值六种数据类型。</li>
+<li>解析效率：与 YAML 相比，JSON 对机器来说更容易解析，序列化/反序列化的速度更快</li>
+</ul>
+<p>从上面的对比中可以看出 YAML 与 JSON 各有优劣，用户在编写测试用例的时可以根据自己的喜好和使用场景来进行选择，不过二者具有较强的相似性，下面以 YAML 为例来对手工编写测试用例进行介绍，JSON 测试用例的编写方式同理，只需要适配 JSON 的语法规则即可。</p>
+<h3 id=编写用例配置>编写用例配置</h3>
+<p>下面展示一个 YAML 用例配置部分的示例，读者只需要了解 YAML 的基本语法规则以及各个字段的类型即可在项目中自定义用例配置部分。</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>config</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;demo with complex mechanisms&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>verify</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#204a87;font-weight:700>False</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>base_url</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;https://postman-echo.com&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>X-Request-Timestamp</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;165460624942&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>parameters</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>user_agent</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;iOS/10.1&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;iOS/10.2&#34;</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>username-password</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>${parameterize($file)}</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>parameters_setting</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>strategies</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>user_agent</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;user-identity&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>pick_order</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;sequential&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>username-password</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;user-info&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>pick_order</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;random&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>limit</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>6</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>think_time</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>strategy</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>random_percentage</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>setting</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>max_percentage</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>1.5</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>min_percentage</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>1</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>limit</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>4</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>app_version</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>v1</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>user_agent</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>iOS/10.3</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>file</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>examples/hrp/account.csv</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>websocket</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>reconnection_times</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>5</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>reconnection_interval</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>2000</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>export</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;app_version&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span><span style=color:#204a87;font-weight:700>weight</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>10</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><h3 id=编写测试步骤>编写测试步骤</h3>
+<h4 id=request>request</h4>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>teststeps</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span>-<span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>get with params</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>foo1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>${ENV(USERNAME)}</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>foo2</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>bar21</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>sum_v</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;${sum_two_int(1, 2)}&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>request</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>method</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>GET</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>url</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$base_url/get</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>params</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>foo1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$foo1</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>foo2</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$foo2</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>sum_v</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$sum_v</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>extract</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>foo3</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;body.args.foo2&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>validate</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;status_code&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>200</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.args.foo1&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;debugtalk&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.args.sum_v&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;3&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.args.foo2&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;bar21&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span>-<span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>post raw text</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>foo1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;bar12&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>foo3</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;bar32&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>request</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>method</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>POST</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>url</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$base_url/post</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>Content-Type</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;text/plain&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>body</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;This is expected to be sent back as part of response body: $foo1-$foo2-$foo3.&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>validate</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;status_code&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>200</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.data&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;This is expected to be sent back as part of response body: bar12-$expect_foo2-bar32.&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>  </span>-<span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>post form data</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>foo2</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>bar23</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>request</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>method</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>POST</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>url</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$base_url/post</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>headers</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>Content-Type</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;application/x-www-form-urlencoded&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>body</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;foo1=$foo1&amp;foo2=$foo2&amp;foo3=$foo3&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>validate</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;status_code&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>200</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.form.foo1&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;$expect_foo1&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.form.foo2&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;bar23&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span>- <span style=color:#204a87;font-weight:700>eq</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000;font-weight:700>[</span><span style=color:#4e9a06>&#34;body.form.foo3&#34;</span><span style=color:#000;font-weight:700>,</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#4e9a06>&#34;bar21&#34;</span><span style=color:#000;font-weight:700>]</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><p>HTTP/2 请求请参考 <a href=https://httprunner.com/docs/user-guide/protocols/h2/>HTTP/2</a> 章节</p>
+<h4 id=api>api</h4>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>teststeps</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span>- <span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>test api /get</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>api</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>api/get.json</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>app_version</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>2.8.7</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>device_sn</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>$device_sn</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>os_platform</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>ios</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>user_agent</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>iOS/10.4</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>extract</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>session_token</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>body.headers.&#34;postman-token&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>      </span><span style=color:#204a87;font-weight:700>validate</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span>- <span style=color:#204a87;font-weight:700>check</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>status_code</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>assert</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>equal</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>expect</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#0000cf;font-weight:700>200</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>msg</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>check status_code</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span>- <span style=color:#204a87;font-weight:700>check</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>body.headers.&#34;postman-token&#34;</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>assert</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>equal</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>expect</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>ea19464c-ddd4-4724-abe9-5e2b254c2723</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>          </span><span style=color:#204a87;font-weight:700>msg</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>check body.headers.postman-token</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><h4 id=testcase>testcase</h4>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#204a87;font-weight:700>teststeps</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline></span>-<span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>name</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>request with functions</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>variables</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>foo1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>testcase_ref_bar1</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span><span style=color:#204a87;font-weight:700>expect_foo1</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>testcase_ref_bar1</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>testcase</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline> </span><span style=color:#000>testcases/requests.yml</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>    </span><span style=color:#204a87;font-weight:700>export</span><span style=color:#000;font-weight:700>:</span><span style=color:#f8f8f8;text-decoration:underline>
+</span><span style=color:#f8f8f8;text-decoration:underline>        </span>- <span style=color:#000>foo3</span><span style=color:#f8f8f8;text-decoration:underline>
+</span></code></pre></div><h4 id=transaction>transaction</h4>
+<p>请参考<a href=https://httprunner.com/docs/user-guide/load-test/concepts/#%E4%BA%8B%E5%8A%A1transaction>事务（transaction）</a>章节</p>
+<h4 id=rendezvous>rendezvous</h4>
+<p>请参考<a href=https://httprunner.com/docs/user-guide/load-test/concepts/#%E9%9B%86%E5%90%88%E7%82%B9rendezvous>集合点（rendezvous）</a>章节</p>
+<h4 id=think_time>think_time</h4>
+<p>请参考<a href=https://httprunner.com/docs/user-guide/load-test/concepts/#%E6%80%9D%E8%80%83%E6%97%B6%E9%97%B4think_time>思考时间（think_time）</a>章节</p>
+<h4 id=websocket>websocket</h4>
+<p>请参考 <a href=https://httprunner.com/docs/user-guide/protocols/websocket/>WebSocket</a> 章节</p>
+<h3 id=注意事项>注意事项</h3>
+<p>与下面即将介绍的代码形态编写测试用例的方式不同，手工编写 YAML/JSON 测试用例具有较大的灵活性并且容易出错，因此在手工编写测试用例的过程中需要格外注意。最后，步骤类型的判断是会有一定优先级的，如果用户在一个测试步骤中指定了多个步骤类型，则会按照 api > testcase > think_time > request > transaction > rendezvous > websocket 的顺序进行类型识别，并最终判断为其中的一类，虽然这种情况极少会出现，但也在此说明一下，以防止发生一些意料之外的错误</p>
+<h2 id=手工编写-pytest-测试用例>手工编写 pytest 测试用例</h2>
+<h2 id=手工编写-gotest-测试用例>手工编写 gotest 测试用例</h2>
 </div>
 </main>
 </div>

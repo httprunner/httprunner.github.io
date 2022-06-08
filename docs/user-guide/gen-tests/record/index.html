@@ -20,11 +20,11 @@
 <meta property="og:description" content="基于 HAR 生成测试用例">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/gen-tests/record/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-11T16:33:18+08:00">
+<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
 <meta itemprop=name content="录制生成">
 <meta itemprop=description content="基于 HAR 生成测试用例">
-<meta itemprop=dateModified content="2022-05-11T16:33:18+08:00">
-<meta itemprop=wordCount content="76">
+<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
+<meta itemprop=wordCount content="163">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="录制生成">
 <meta name=twitter:description content="基于 HAR 生成测试用例">
@@ -245,6 +245,17 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
+<div class=td-toc><nav id=TableOfContents>
+<ul>
+<li><a href=#什么是-har-格式>什么是 HAR 格式</a></li>
+<li><a href=#录制-har-文件>录制 HAR 文件</a>
+<ul>
+<li><a href=#charles-录制-har-文件>Charles 录制 HAR 文件</a></li>
+<li><a href=#chrome-录制-har-文件>Chrome 录制 HAR 文件</a></li>
+</ul>
+</li>
+</ul>
+</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -268,6 +279,32 @@ Versions
 <div class=lead>基于 HAR 生成测试用例</div>
 <header class=article-meta>
 </header>
+<h2 id=什么是-har-格式>什么是 HAR 格式</h2>
+<blockquote>
+<p>以下内容来自维基百科关于 <a href=https://zh.wikipedia.org/wiki/.har>HAR</a> 格式的介绍</p>
+</blockquote>
+<p>HTTP 存档格式（HTTP Archive format，简称 HAR）是一种 JSON 格式的存档文件格式，多用于记录网页浏览器与网站的交互过程。文件扩展名通常为 .har。</p>
+<p>HAR 格式的规范定义了一个 HTTP 事务的存档格式，可用于网页浏览器导出加载网页时的详细性能数据。此格式的规范由万维网联盟（W3C）的 Web 性能工作组制作，截至2016年3月是一份规范草案。</p>
+<h2 id=录制-har-文件>录制 HAR 文件</h2>
+<p>采用 Charles 等抓包工具，以及 Chrome 等浏览器均可以导出 HAR 格式的文件，具体方式可以参考如下流程：</p>
+<h3 id=charles-录制-har-文件>Charles 录制 HAR 文件</h3>
+<p>Charles 录制 HAR 分为如下两步：</p>
+<ul>
+<li>步骤一：在抓取到的会话（Session）上右击选择 <code>Export Session...</code></li>
+</ul>
+<p><img src=/image/charles-record-har-1.png alt="Charles 录制 HAR 文件步骤1"></p>
+<ul>
+<li>步骤二：导出格式选择 <code>HTTP Archive (.har)</code> 来导出为 HAR 文件</li>
+</ul>
+<p><img src=/image/charles-record-har-2.png alt="Charles 录制 HAR 文件步骤2"></p>
+<h3 id=chrome-录制-har-文件>Chrome 录制 HAR 文件</h3>
+<p>Chrome 录制 HAR 文件可以通过如下两种方法：</p>
+<ul>
+<li>方法一：点击按钮导出 HAR 文件</li>
+<li>方法二：在请求列表空白处右击，选择<code>以 HAR 格式保存所有内容</code></li>
+</ul>
+<p><img src=/image/chrome-record-har.png alt="Chrome 录制 HAR 文件"></p>
+<p>在录制请求并导出 HAR 文件之后，就可以进行测试用例的生成了，这里首先执行 <code>hrp har2case -h</code> 来查看指令的帮助信息。</p>
 <div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>$ hrp har2case -h
 convert HAR to json/yaml testcase files
 
@@ -284,6 +321,9 @@ Flags:
 Global Flags:
       --log-json           set log to json format
   -l, --log-level string   set log level (default &#34;INFO&#34;)
+</code></pre></div><p>由于 <code>hrp convert</code> 指令在选项与功能上都兼容和涵盖了 <code>hrp har2case</code>，因此选项的详细说明与使用示例将在<a href=https://httprunner.com/docs/user-guide/gen-tests/convert/>转换生成</a>章节中进行介绍，因此本节仅给出一个简单的示例如下：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#8f5902;font-style:italic># 将输入的 demo.har 转换为 yaml 测试用例 demo_test.yaml</span>
+$ hrp har2case demo.har --to-yaml
 </code></pre></div>
 </div>
 </main>
