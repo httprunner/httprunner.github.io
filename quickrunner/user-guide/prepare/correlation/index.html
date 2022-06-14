@@ -20,21 +20,21 @@
 <meta property="og:title" content="关联机制">
 <meta property="og:description" content="若您在脚本执行期间，想使各接口请求在上下文之间可以进行参数传递，那么您就需要使用到 QuickRunner 的「关联机制」这个功能。 目前，「关联机制」支持三种形式的来源检查：status_code(响应码)、body(响应体)、headers（响应头），同时支持两种形式的提取规则：正则匹配、json路径。
 该功能的使用方式如下：
-提取参数 json_path形式 正则表达式 使用方式同 json_path 一致，当前仅支持对 body 内容进行正则匹配，可提取 HTML 内容。 参数引用 参数引用需要使用 $参数名 的形式。 ">
+提取参数 json_path形式 参数引用 参数引用需要使用 $参数名 的形式。 ">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/quickrunner/user-guide/prepare/correlation/"><meta property="article:section" content="QuickRunner">
 <meta property="article:modified_time" content="2022-06-08T19:16:27+08:00">
 <meta itemprop=name content="关联机制">
 <meta itemprop=description content="若您在脚本执行期间，想使各接口请求在上下文之间可以进行参数传递，那么您就需要使用到 QuickRunner 的「关联机制」这个功能。 目前，「关联机制」支持三种形式的来源检查：status_code(响应码)、body(响应体)、headers（响应头），同时支持两种形式的提取规则：正则匹配、json路径。
 该功能的使用方式如下：
-提取参数 json_path形式 正则表达式 使用方式同 json_path 一致，当前仅支持对 body 内容进行正则匹配，可提取 HTML 内容。 参数引用 参数引用需要使用 $参数名 的形式。 ">
+提取参数 json_path形式 参数引用 参数引用需要使用 $参数名 的形式。 ">
 <meta itemprop=dateModified content="2022-06-08T19:16:27+08:00">
-<meta itemprop=wordCount content="19">
+<meta itemprop=wordCount content="11">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="关联机制">
 <meta name=twitter:description content="若您在脚本执行期间，想使各接口请求在上下文之间可以进行参数传递，那么您就需要使用到 QuickRunner 的「关联机制」这个功能。 目前，「关联机制」支持三种形式的来源检查：status_code(响应码)、body(响应体)、headers（响应头），同时支持两种形式的提取规则：正则匹配、json路径。
 该功能的使用方式如下：
-提取参数 json_path形式 正则表达式 使用方式同 json_path 一致，当前仅支持对 body 内容进行正则匹配，可提取 HTML 内容。 参数引用 参数引用需要使用 $参数名 的形式。 ">
+提取参数 json_path形式 参数引用 参数引用需要使用 $参数名 的形式。 ">
 <link rel=preload href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css as=style>
 <link href=/scss/main.min.8d643e398df6d2d26f89d02d688cad7f8dd0a09042193f8d50b455c1ed22f910.css rel=stylesheet integrity>
 <script src=https://code.jquery.com/jquery-3.6.0.min.js integrity=sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK crossorigin=anonymous></script>
@@ -230,10 +230,6 @@ Versions
 <h3 id=提取参数>提取参数</h3>
 <h4 id=json_path形式>json_path形式</h4>
 <img src=/image/QuickRunner/direction/correlation_json_path.png alt=QuickRunner width=800>
-<h4 id=正则表达式>正则表达式</h4>
-<p>使用方式同 json_path 一致，当前仅支持对 body 内容进行正则匹配，可提取 HTML 内容。
-<img src=/image/QuickRunner/direction/correlation_regx1.png alt=QuickRunner width=800>
-<img src=/image/QuickRunner/direction/correlation_regx.png alt=QuickRunner width=800></p>
 <h3 id=参数引用>参数引用</h3>
 <p>参数引用需要使用 $参数名 的形式。
 <img src=/image/QuickRunner/direction/correlation_apply.png alt=QuickRunner width=800></p>
