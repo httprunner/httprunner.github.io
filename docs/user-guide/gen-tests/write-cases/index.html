@@ -20,10 +20,10 @@
 <meta property="og:description" content="手工编写 YAML/JSON/pytest/gotest 测试用例">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/gen-tests/write-cases/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-06-14T14:28:30+08:00">
+<meta property="article:modified_time" content="2022-06-17T18:03:31+08:00">
 <meta itemprop=name content="手工编写">
 <meta itemprop=description content="手工编写 YAML/JSON/pytest/gotest 测试用例">
-<meta itemprop=dateModified content="2022-06-14T14:28:30+08:00">
+<meta itemprop=dateModified content="2022-06-17T18:03:31+08:00">
 <meta itemprop=wordCount content="418">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="手工编写">
@@ -266,7 +266,7 @@ Versions
 <li><a href=#注意事项>注意事项</a></li>
 </ul>
 </li>
-<li><a href=#手工编写-pytest-测试用例>手工编写 pytest 测试用例</a></li>
+<li><a href=#手工编写-pytest-测试用例>手工编写 Pytest 测试用例</a></li>
 <li><a href=#手工编写-gotest-测试用例>手工编写 gotest 测试用例</a></li>
 </ul>
 </nav></div>
@@ -599,7 +599,7 @@ Versions
 <p>请参考 <a href=https://httprunner.com/docs/user-guide/protocols/websocket/>WebSocket</a> 章节</p>
 <h3 id=注意事项>注意事项</h3>
 <p>与下面即将介绍的代码形态编写测试用例的方式不同，手工编写 YAML/JSON 测试用例具有较大的灵活性并且容易出错，因此在手工编写测试用例的过程中需要格外注意。最后，步骤类型的判断是会有一定优先级的，如果用户在一个测试步骤中指定了多个步骤类型，则会按照 api > testcase > think_time > request > transaction > rendezvous > websocket 的顺序进行类型识别，并最终判断为其中的一类，虽然这种情况极少会出现，但也在此说明一下，以防止发生一些意料之外的错误</p>
-<h2 id=手工编写-pytest-测试用例>手工编写 pytest 测试用例</h2>
+<h2 id=手工编写-pytest-测试用例>手工编写 Pytest 测试用例</h2>
 <h2 id=手工编写-gotest-测试用例>手工编写 gotest 测试用例</h2>
 </div>
 </main>
