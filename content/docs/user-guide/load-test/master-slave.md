@@ -192,6 +192,12 @@ curl --location --request GET 'http://127.0.0.1:9771/quit'
    
 ### 性能监控
 
+结合 Prometheus + Grafana 看板，实现 Web 化的实时监控指标展示。关于 Prometheus + Grafana 的性能监控配置方面的内容，详见[监控配置]。
+
+效果如下所示：
+
+![](/image/demo-grafana-3.jpg)
+
 大家在 HttpRunner 公众号回复「Grafana」获取模板下载地址，然后导入 Grafana 中即可使用。
 
 <img src="/image/qrcode.png" alt="HttpRunner" width="300">
@@ -207,3 +213,5 @@ curl --location --request GET 'http://127.0.0.1:9771/quit'
 
 1. 如果 master 与 worker 能保证系统与架构统一，建议使用 golang 自定义函数，优点：执行效率更高、worker 无需具备 golang 编译环境
 2. 如果 master 与 worker 系统与架构不能做到统一，推荐使用 python 自定义函数，但有个前提是: 如果用到第三方依赖，需要提前在 worker 节点 ~/.hrp/venv python虚拟环境中中安装依赖
+
+[监控配置]: /docs/user-guide/load-test/monitor/
