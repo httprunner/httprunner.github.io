@@ -24,6 +24,7 @@ description: Thank you to all our sponsors! ✨🍰✨
 <img src="/image/sponsors/归一.jpeg" title="归一" width="32">
 <img src="/image/sponsors/王健.jpeg" title="王健" width="32">
 <img src="/image/sponsors/许立.jpeg" title="许立" width="32">
+<img src="/image/sponsors/康英杰.jpg" title="(・ o ・)" width="32">
 
 ### 成为赞助商
 
