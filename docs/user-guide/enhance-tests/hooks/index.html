@@ -20,10 +20,10 @@
 <meta property="og:description" content="使用 Hooks 机制可辅助实现 step 前后置操作">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/enhance-tests/hooks/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
+<meta property="article:modified_time" content="2022-07-14T20:01:06+08:00">
 <meta itemprop=name content="Hook 机制（hooks）">
 <meta itemprop=description content="使用 Hooks 机制可辅助实现 step 前后置操作">
-<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
+<meta itemprop=dateModified content="2022-07-14T20:01:06+08:00">
 <meta itemprop=wordCount content="491">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="Hook 机制（hooks）">
@@ -126,9 +126,9 @@ Versions
 <a href=/docs/user-guide/gen-tests/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-docsuser-guidegen-tests><span>准备测试用例</span></a>
 <ul class="ul-3 foldable">
 <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-docsuser-guidegen-testsrecord-li>
-<a href=/docs/user-guide/gen-tests/record/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsrecord><span>录制生成</span></a>
+<a href=/docs/user-guide/gen-tests/record/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsrecord><span>录制生成 HAR 文件</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-docsuser-guidegen-testsconvert-li>
-<a href=/docs/user-guide/gen-tests/convert/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsconvert><span>转换生成</span></a>
+<a href=/docs/user-guide/gen-tests/convert/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsconvert><span>转换生成测试用例</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-docsuser-guidegen-testswrite-cases-li>
 <a href=/docs/user-guide/gen-tests/write-cases/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testswrite-cases><span>手工编写</span></a>
 </li>
@@ -379,7 +379,7 @@ Vary: Accept-Encoding
 1:43PM INF quit hashicorp plugin process
 </code></pre></div><h2 id=说明>说明</h2>
 <ul>
-<li>测试步骤运行过程中会保存 <code>hrp_step_name</code>、<code>hrp_step_request</code> 和 <code>hrp_step</code> 三个特殊的变量，类型分别为 string、map[string]interface{} 和 interface{}，上面的示例中展示了在 Hook 函数中传入这三个变量作为参数的方式</li>
+<li>测试步骤运行过程中会保存 <code>hrp_step_name</code>、<code>hrp_step_request</code> 和 <code>hrp_step_response</code> 三个特殊的变量，类型分别为 string、map[string]interface{} 和 interface{}，上面的示例中展示了在 Hook 函数中传入这三个变量作为参数的方式</li>
 <li>因为自定义函数本质上会通过 RPC 的方式来进行调用，所以如果使用自定义的函数作为 Hook 函数，则推荐使用返回值的方式来展示自定义函数运行过程的输出，而不是通过常规的日志方式</li>
 </ul>
 </div>

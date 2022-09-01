@@ -14,19 +14,19 @@
 <link rel=icon type=image/png href=/favicons/android-96x96.png sizes=96x96>
 <link rel=icon type=image/png href=/favicons/android-144x144.png sizes=144x144>
 <link rel=icon type=image/png href=/favicons/android-192x192.png sizes=192x192>
-<title>录制生成 | HttpRunner</title>
+<title>录制生成 HAR 文件 | HttpRunner</title>
 <meta name=description content="基于 HAR 生成测试用例">
-<meta property="og:title" content="录制生成">
+<meta property="og:title" content="录制生成 HAR 文件">
 <meta property="og:description" content="基于 HAR 生成测试用例">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/gen-tests/record/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-06-08T15:06:00+08:00">
-<meta itemprop=name content="录制生成">
+<meta property="article:modified_time" content="2022-07-14T20:01:06+08:00">
+<meta itemprop=name content="录制生成 HAR 文件">
 <meta itemprop=description content="基于 HAR 生成测试用例">
-<meta itemprop=dateModified content="2022-06-08T15:06:00+08:00">
-<meta itemprop=wordCount content="163">
+<meta itemprop=dateModified content="2022-07-14T20:01:06+08:00">
+<meta itemprop=wordCount content="62">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
-<meta name=twitter:title content="录制生成">
+<meta name=twitter:title content="录制生成 HAR 文件">
 <meta name=twitter:description content="基于 HAR 生成测试用例">
 <link rel=preload href=/scss/main.min.4ea391067efeb55500313636a743c1c5321182947da880ba83f40128b5c40d24.css as=style>
 <link href=/scss/main.min.4ea391067efeb55500313636a743c1c5321182947da880ba83f40128b5c40d24.css rel=stylesheet integrity>
@@ -126,9 +126,9 @@ Versions
 <a href=/docs/user-guide/gen-tests/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-docsuser-guidegen-tests><span>准备测试用例</span></a>
 <ul class="ul-3 foldable">
 <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child active-path" id=m-docsuser-guidegen-testsrecord-li>
-<a href=/docs/user-guide/gen-tests/record/ class="align-left pl-0 active td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsrecord><span class=td-sidebar-nav-active-item>录制生成</span></a>
+<a href=/docs/user-guide/gen-tests/record/ class="align-left pl-0 active td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsrecord><span class=td-sidebar-nav-active-item>录制生成 HAR 文件</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-docsuser-guidegen-testsconvert-li>
-<a href=/docs/user-guide/gen-tests/convert/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsconvert><span>转换生成</span></a>
+<a href=/docs/user-guide/gen-tests/convert/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsconvert><span>转换生成测试用例</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child" id=m-docsuser-guidegen-testswrite-cases-li>
 <a href=/docs/user-guide/gen-tests/write-cases/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testswrite-cases><span>手工编写</span></a>
 </li>
@@ -274,12 +274,12 @@ Versions
 <a href=https://httprunner.com/docs/user-guide/gen-tests/>准备测试用例</a>
 </li>
 <li class="breadcrumb-item active" aria-current=page>
-<a href=https://httprunner.com/docs/user-guide/gen-tests/record/>录制生成</a>
+<a href=https://httprunner.com/docs/user-guide/gen-tests/record/>录制生成 HAR 文件</a>
 </li>
 </ol>
 </nav>
 <div class=td-content>
-<h1>录制生成</h1>
+<h1>录制生成 HAR 文件</h1>
 <div class=lead>基于 HAR 生成测试用例</div>
 <header class=article-meta>
 </header>
@@ -308,27 +308,6 @@ Versions
 <li>方法二：在请求列表空白处右击，选择<code>以 HAR 格式保存所有内容</code></li>
 </ul>
 <p><img src=/image/chrome-record-har.png alt="Chrome 录制 HAR 文件"></p>
-<p>在录制请求并导出 HAR 文件之后，就可以进行测试用例的生成了，这里首先执行 <code>hrp har2case -h</code> 来查看指令的帮助信息。</p>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>$ hrp har2case -h
-convert HAR to json/yaml testcase files
-
-Usage:
-  hrp har2case $har_path... [flags]
-
-Flags:
-  -h, --help                help for har2case
-  -d, --output-dir string   specify output directory, default to the same dir with har file
-  -p, --profile string      specify profile path to override headers and cookies
-  -j, --to-json             convert to JSON format (default true)
-  -y, --to-yaml             convert to YAML format
-
-Global Flags:
-      --log-json           set log to json format
-  -l, --log-level string   set log level (default &#34;INFO&#34;)
-</code></pre></div><p>由于 <code>hrp convert</code> 指令在选项与功能上都兼容和涵盖了 <code>hrp har2case</code>，因此选项的详细说明与使用示例将在<a href=https://httprunner.com/docs/user-guide/gen-tests/convert/>转换生成</a>章节中进行介绍，因此本节仅给出一个简单的示例如下：</p>
-<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-shell data-lang=shell><span style=color:#8f5902;font-style:italic># 将输入的 demo.har 转换为 yaml 测试用例 demo_test.yaml</span>
-$ hrp har2case demo.har --to-yaml
-</code></pre></div>
 </div>
 </main>
 </div>

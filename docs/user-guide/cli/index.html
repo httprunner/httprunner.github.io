@@ -20,11 +20,11 @@
 <meta property="og:description" content="HttpRunner 的命令行工具及参数说明">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/docs/user-guide/cli/"><meta property="article:section" content="docs">
-<meta property="article:modified_time" content="2022-05-11T16:33:18+08:00">
+<meta property="article:modified_time" content="2022-07-14T20:01:06+08:00">
 <meta itemprop=name content="命令行工具">
 <meta itemprop=description content="HttpRunner 的命令行工具及参数说明">
-<meta itemprop=dateModified content="2022-05-11T16:33:18+08:00">
-<meta itemprop=wordCount content="191">
+<meta itemprop=dateModified content="2022-07-14T20:01:06+08:00">
+<meta itemprop=wordCount content="196">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="命令行工具">
 <meta name=twitter:description content="HttpRunner 的命令行工具及参数说明">
@@ -126,9 +126,9 @@ Versions
 <a href=/docs/user-guide/gen-tests/ class="align-left pl-0 td-sidebar-link td-sidebar-link__section" id=m-docsuser-guidegen-tests><span>准备测试用例</span></a>
 <ul class="ul-3 foldable">
 <li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-docsuser-guidegen-testsrecord-li>
-<a href=/docs/user-guide/gen-tests/record/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsrecord><span>录制生成</span></a>
+<a href=/docs/user-guide/gen-tests/record/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsrecord><span>录制生成 HAR 文件</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-docsuser-guidegen-testsconvert-li>
-<a href=/docs/user-guide/gen-tests/convert/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsconvert><span>转换生成</span></a>
+<a href=/docs/user-guide/gen-tests/convert/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testsconvert><span>转换生成测试用例</span></a>
 </li><li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child collapse" id=m-docsuser-guidegen-testswrite-cases-li>
 <a href=/docs/user-guide/gen-tests/write-cases/ class="align-left pl-0 td-sidebar-link td-sidebar-link__page" id=m-docsuser-guidegen-testswrite-cases><span>手工编写</span></a>
 </li>
@@ -293,18 +293,20 @@ Usage:
 
 Available Commands:
   boom         run load test with boomer
+  build        build plugin for testing
   completion   generate the autocompletion script for the specified shell
-  convert      convert JSON/YAML testcases to pytest/gotest scripts
-  har2case     convert HAR to json/yaml testcase files
+  convert      convert to JSON/YAML/gotest/pytest testcases
   help         Help about any command
   pytest       run API test with pytest
   run          run API test with go engine
   startproject create a scaffold project
+  wiki         visit https://httprunner.com
 
 Flags:
   -h, --help               help for hrp
       --log-json           set log to json format
   -l, --log-level string   set log level (default &#34;INFO&#34;)
+      --venv string        specify python3 venv path
   -v, --version            version for hrp
 
 Use &#34;hrp [command] --help&#34; for more information about a command.
