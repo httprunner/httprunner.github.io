@@ -128,7 +128,7 @@ Vary: Accept-Encoding
 
 ## 说明
 
-- 测试步骤运行过程中会保存 `hrp_step_name`、`hrp_step_request` 和 `hrp_step` 三个特殊的变量，类型分别为 string、map[string]interface{} 和 interface{}，上面的示例中展示了在 Hook 函数中传入这三个变量作为参数的方式
+- 测试步骤运行过程中会保存 `hrp_step_name`、`hrp_step_request` 和 `hrp_step_response` 三个特殊的变量，类型分别为 string、map[string]interface{} 和 interface{}，上面的示例中展示了在 Hook 函数中传入这三个变量作为参数的方式
 - 因为自定义函数本质上会通过 RPC 的方式来进行调用，所以如果使用自定义的函数作为 Hook 函数，则推荐使用返回值的方式来展示自定义函数运行过程的输出，而不是通过常规的日志方式
 
 [unittest.TestCase]: https://docs.python.org/3/library/unittest.html#unittest.TestCase
