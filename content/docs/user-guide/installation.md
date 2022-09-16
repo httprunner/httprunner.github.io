@@ -48,10 +48,10 @@ $ chmod +x hrp
 
 同时为了让 `hrp` 在系统中可以全局调用，推荐将 `hrp` 添加到系统环境变量的 `PATH` 路径中，
 
-针对 `Linux/macOS` 系统，推荐将 `hrp` 移动到系统 `/user/local/bin` 目录。
+针对 `Linux/macOS` 系统，推荐将 `hrp` 移动到系统 `/usr/local/bin` 目录。
 
 ```bash
-$ mv hrp /user/local/bin/
+$ mv hrp /usr/local/bin/
 ```
 
 针对 `Windows` 系统：
