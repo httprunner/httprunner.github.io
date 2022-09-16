@@ -30,18 +30,20 @@ Usage:
 
 Available Commands:
   boom         run load test with boomer
+  build        build plugin for testing
   completion   generate the autocompletion script for the specified shell
-  convert      convert JSON/YAML testcases to pytest/gotest scripts
-  har2case     convert HAR to json/yaml testcase files
+  convert      convert to JSON/YAML/gotest/pytest testcases
   help         Help about any command
   pytest       run API test with pytest
   run          run API test with go engine
   startproject create a scaffold project
+  wiki         visit https://httprunner.com
 
 Flags:
   -h, --help               help for hrp
       --log-json           set log to json format
   -l, --log-level string   set log level (default "INFO")
+      --venv string        specify python3 venv path
   -v, --version            version for hrp
 
 Use "hrp [command] --help" for more information about a command.

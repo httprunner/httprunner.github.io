@@ -66,7 +66,7 @@
       }
     ]
   },
-  "description": "HttpRunner Load Testing for Prometheus",
+  "description": "HttpRunner for Distributed Load Testing",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 11985,
@@ -90,70 +90,36 @@
   "panels": [
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "rgb(31, 120, 193)",
+            "mode": "fixed"
           },
           "mappings": [
             {
               "options": {
-                "1": {
-                  "index": 4,
-                  "text": "Initializing"
-                },
-                "2": {
-                  "index": 3,
-                  "text": "Spawning"
-                },
-                "3": {
-                  "index": 2,
-                  "text": "Running"
-                },
-                "4": {
-                  "index": 1,
-                  "text": "Quitting"
-                },
-                "5": {
-                  "index": 0,
-                  "text": "Stopped"
+                "match": "null",
+                "result": {
+                  "text": "N/A"
                 }
               },
-              "type": "value"
+              "type": "special"
             }
           ],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgba(245, 54, 54, 0.9)",
+                "color": "green",
                 "value": null
               },
               {
-                "color": "text",
-                "value": 0
-              },
-              {
-                "color": "purple",
-                "value": 1
-              },
-              {
-                "color": "blue",
-                "value": 2
-              },
-              {
-                "color": "green",
-                "value": 3
-              },
-              {
-                "color": "yellow",
-                "value": 4
-              },
-              {
-                "color": "orange",
-                "value": 5
+                "color": "red",
+                "value": 80
               }
             ]
           },
@@ -162,22 +128,22 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
-        "w": 4,
+        "h": 4,
+        "w": 2,
         "x": 0,
         "y": 0
       },
-      "id": 1,
+      "id": 2,
       "links": [],
       "maxDataPoints": 100,
       "options": {
-        "colorMode": "value",
+        "colorMode": "none",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -191,16 +157,15 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "state{mode=\"standalone\"}",
+          "expr": "sum(users{mode=\"worker\"})",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "",
-          "metric": "",
           "refId": "A",
           "step": 20
         }
       ],
-      "title": "HttpRunner Status",
+      "title": "Users",
       "type": "stat"
     },
     {
@@ -244,11 +209,11 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 4,
+        "w": 2,
+        "x": 2,
         "y": 0
       },
-      "id": 2,
+      "id": 33,
       "links": [],
       "maxDataPoints": 100,
       "options": {
@@ -256,68 +221,6 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "mean"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.5.2",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
-          "expr": "users{mode=\"standalone\"}",
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "",
-          "refId": "A",
-          "step": 20
-        }
-      ],
-      "title": "Users",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "${DS_PROMETHEUS}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 0
-      },
-      "id": 18,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
             "lastNotNull"
@@ -334,13 +237,94 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(total_num_requests{mode=\"standalone\",method!=\"transaction\"})",
+          "expr": "count(users{mode=\"worker\"})",
           "interval": "",
+          "intervalFactor": 2,
           "legendFormat": "",
-          "refId": "A"
+          "refId": "A",
+          "step": 20
         }
       ],
-      "title": "Total Requests",
+      "title": "Workers",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(31, 120, 193)",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 4,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          },
+          "expr": "sum(total_rps{mode=\"worker\"})",
+          "intervalFactor": 2,
+          "refId": "A",
+          "step": 20
+        }
+      ],
+      "title": "Total RPS",
       "type": "stat"
     },
     {
@@ -362,8 +346,8 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 6,
-        "x": 12,
+        "w": 8,
+        "x": 8,
         "y": 0
       },
       "hiddenSeries": false,
@@ -399,7 +383,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(total_num_failures{mode=\"standalone\",method!=\"transaction\"}) / sum(total_num_requests{mode=\"standalone\",method!=\"transaction\"})",
+          "expr": "sum(total_num_failures{mode=\"worker\",method!~\"transation|testcase\"}) / sum(total_num_requests{mode=\"worker\", method!~\"transation|testcase\"})",
           "interval": "",
           "legendFormat": "total",
           "range": true,
@@ -452,8 +436,8 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
-        "w": 6,
-        "x": 18,
+        "w": 8,
+        "x": 16,
         "y": 0
       },
       "hiddenSeries": false,
@@ -489,7 +473,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "total_fail_per_sec{mode=\"standalone\"}",
+          "expr": "sum(total_fail_per_sec{mode=\"worker\"})",
           "legendFormat": "total",
           "range": true,
           "refId": "A"
@@ -511,11 +495,13 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:2350",
           "format": "short",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:2351",
           "format": "short",
           "logBase": 1,
           "show": true
@@ -527,60 +513,42 @@
     },
     {
       "datasource": {
+        "type": "prometheus",
         "uid": "${DS_PROMETHEUS}"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
+            "mode": "thresholds"
           },
-          "decimals": 2,
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          },
-          "unit": "short"
+          }
         },
         "overrides": []
       },
       "gridPos": {
         "h": 3,
         "w": 4,
-        "x": 4,
+        "x": 0,
         "y": 4
       },
-      "id": 4,
-      "links": [],
-      "maxDataPoints": 100,
+      "id": 18,
       "options": {
-        "colorMode": "none",
+        "colorMode": "value",
         "graphMode": "area",
         "justifyMode": "auto",
-        "orientation": "horizontal",
+        "orientation": "auto",
         "reduceOptions": {
           "calcs": [
-            "mean"
+            "lastNotNull"
           ],
           "fields": "",
           "values": false
@@ -594,13 +562,13 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "total_rps{mode=\"standalone\"}",
-          "intervalFactor": 2,
-          "refId": "A",
-          "step": 20
+          "expr": "sum(total_num_requests{mode=\"worker\",method!~\"transaction|testcase\"})",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
         }
       ],
-      "title": "Total RPS",
+      "title": "Total Requests",
       "type": "stat"
     },
     {
@@ -629,7 +597,7 @@
       "gridPos": {
         "h": 3,
         "w": 4,
-        "x": 8,
+        "x": 4,
         "y": 4
       },
       "id": 19,
@@ -654,7 +622,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(total_num_failures{mode=\"standalone\",method!=\"transaction\",name!=\"Action\"})",
+          "expr": "sum(total_num_failures{mode=\"worker\",method!~\"transaction|testcsae\"})",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -730,7 +698,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg(response_time{quantile=\"0.95\",method!~\"transaction\",mode=\"standalone\"}) by (name,method)",
+          "expr": "avg(response_time{mode=\"worker\", quantile=\"0.95\", method!~\"transaction|testcase\"}) by (name,method)",
           "interval": "",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} PCT95",
@@ -744,7 +712,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "avg(response_time{quantile=\"0.5\",method!~\"transaction\",mode=\"standalone\"}) by (name,method)",
+          "expr": "avg(response_time{mode=\"worker\", quantile=\"0.5\", method!~\"transaction|testcase\"}) by (name,method)",
           "interval": "",
           "legendFormat": "{{ method}} - {{name}} PCT50",
           "range": true,
@@ -768,12 +736,14 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:2433",
           "decimals": 0,
           "format": "ms",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:2434",
           "decimals": 0,
           "format": "ms",
           "logBase": 1,
@@ -850,7 +820,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "total_max_response_time{name!~\"Action|Total\",mode=\"standalone\",method!=\"transaction\"}",
+          "expr": "total_max_response_time{name!~\"Total\",mode=\"worker\",method!~\"transaction|testcase\"}",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} MAX",
           "range": true,
@@ -863,7 +833,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "total_min_response_time{name!~\"Action|Total\",mode=\"standalone\",method!=\"transaction\"}",
+          "expr": "total_min_response_time{name!~\"Total\",mode=\"worker\",method!~\"transaction|testcase\"}",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} MIN",
           "metric": "",
@@ -877,7 +847,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "response_time_sum{name!=\"Action\",mode=\"standalone\",method!=\"transaction\"} / response_time_count{name!=\"Action\", mode=\"standalone\",method!=\"transaction\"}",
+          "expr": "response_time_sum{mode=\"worker\",method!=\"transaction\"} / response_time_count{mode=\"standalone\",method!~\"transaction|testcase\"}",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} AVG",
           "metric": "",
@@ -891,7 +861,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "response_time{quantile=\"0.5\", name!=\"Action\",mode=\"standalone\",method!=\"transaction\"}",
+          "expr": "response_time{quantile=\"0.5\", mode=\"worker\",method!~\"transaction|testcase\"}",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} MEDIAN",
           "range": true,
@@ -916,12 +886,14 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:2517",
           "decimals": 0,
           "format": "ms",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:2518",
           "decimals": 0,
           "format": "ms",
           "logBase": 1,
@@ -1051,7 +1023,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(errors{mode=\"standalone\"}) by (method, name, error)",
+          "expr": "sum(errors{mode=\"worker\"}) by (method, name, error)",
           "format": "table",
           "hide": false,
           "instant": true,
@@ -1078,7 +1050,7 @@
         "x": 0,
         "y": 15
       },
-      "id": 14,
+      "id": 32,
       "showHeader": true,
       "sort": {
         "col": 0,
@@ -1269,7 +1241,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(min_response_time{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "min(min_response_time{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1281,7 +1253,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(max_response_time{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "max(max_response_time{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1293,7 +1265,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(average_response_time{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "avg(average_response_time{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1305,7 +1277,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(median_response_time{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "avg(median_response_time{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1317,7 +1289,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(current_rps{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "sum(current_rps{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1329,7 +1301,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(num_failures{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "sum(num_failures{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1341,7 +1313,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "sum(num_requests{name!=\"Action\",mode=\"standalone\"}) by (method, name)",
+          "expr": "sum(num_requests{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1353,7 +1325,7 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "num_failures{name!=\"Action\",mode=\"standalone\"} / num_requests{name!=\"Action\",mode=\"standalone\"}",
+          "expr": "sum(num_failures{mode=\"worker\"}) by (method, name) / sum(num_requests{mode=\"worker\"}) by (method, name)",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -1431,7 +1403,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(max_response_time{mode=\"standalone\",method!=\"transaction\"}) by (method, name)",
+          "expr": "max(max_response_time{mode=\"worker\", method!~\"transaction|testcase\"})",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} MAX",
           "range": true,
@@ -1444,7 +1416,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(min_response_time{mode=\"standalone\",method!=\"transaction\"}) by (method, name)",
+          "expr": "min(min_response_time{mode=\"worker\", method!~\"transaction|testcase\"})",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} MIN",
           "metric": "",
@@ -1458,7 +1430,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(average_response_time{mode=\"standalone\",method!=\"transaction\"}) by (method, name)",
+          "expr": "avg(average_response_time{mode=\"worker\", method!~\"transaction|testcase\"})",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} AVG",
           "metric": "",
@@ -1472,7 +1444,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(median_response_time{mode=\"standalone\",method!=\"transaction\"}) by (method, name)",
+          "expr": "avg(median_response_time{mode=\"worker\", method!~\"transaction|testcase\"})",
           "intervalFactor": 2,
           "legendFormat": "{{ method}} - {{name}} MEDIAN",
           "range": true,
@@ -1497,12 +1469,14 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1312",
           "decimals": 0,
           "format": "ms",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:1313",
           "decimals": 0,
           "format": "ms",
           "logBase": 1,
@@ -1577,27 +1551,14 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "current_rps{mode=\"standalone\",method!=\"transaction\",name!=\"Action\"}",
-          "format": "time_series",
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "{{ method}} - {{name}}",
-          "refId": "A",
-          "step": 2
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
-          },
           "editorMode": "code",
-          "expr": "current_fail_per_sec{mode=\"standalone\",method!=\"transaction\",name!=\"Action\"}",
+          "expr": "sum(current_rps{mode=\"worker\", method!~\"transaction|testcase\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ method}} - {{name}} fail_ratio [%]",
+          "legendFormat": "total",
           "range": true,
-          "refId": "B",
+          "refId": "A",
           "step": 2
         }
       ],
@@ -1618,11 +1579,13 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1229",
           "format": "reqps",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:1230",
           "format": "percent",
           "logBase": 1,
           "min": "0",
@@ -1683,7 +1646,10 @@
             "type": "prometheus",
             "uid": "${DS_PROMETHEUS}"
           },
-          "expr": "total_fail_per_sec{mode=\"standalone\"}",
+          "editorMode": "code",
+          "expr": "sum(num_failures{mode=\"worker\",method!~\"transaction|testcase\"}) / sum(num_requests{mode=\"worker\",method!~\"transaction|testcase\"})",
+          "legendFormat": "total",
+          "range": true,
           "refId": "A"
         }
       ],
@@ -1703,11 +1669,13 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1146",
           "format": "short",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:1147",
           "format": "short",
           "logBase": 1,
           "show": true
@@ -1767,7 +1735,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(total_num_requests{method=\"transaction\", name!=\"Action\"})",
+          "expr": "sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"})",
           "interval": "",
           "legendFormat": "total",
           "range": true,
@@ -1779,7 +1747,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "total_num_requests{method=\"transaction\", name!=\"Action\"}",
+          "expr": "sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) by (name)",
           "hide": false,
           "legendFormat": "{{method}}-{{name}}",
           "range": true,
@@ -1802,11 +1770,13 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1063",
           "format": "short",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:1064",
           "format": "short",
           "logBase": 1,
           "show": true
@@ -1866,7 +1836,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(total_num_requests{method=\"transaction\", name!=\"Action\"} - total_num_failures{method=\"transaction\", name!=\"Action\"})",
+          "expr": "sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"} - total_num_failures{mode=\"worker\", method=\"transaction\", name!=\"Action\"})",
           "interval": "",
           "legendFormat": "total",
           "range": true,
@@ -1878,7 +1848,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "total_num_requests{method=\"transaction\", name!=\"Action\"} - total_num_failures{method=\"transaction\", name!=\"Action\"}",
+          "expr": "sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) by (name, method) - sum(total_num_failures{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) by (name, method)",
           "hide": false,
           "legendFormat": "{{ method}} - {{name}}",
           "range": true,
@@ -1901,11 +1871,13 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:980",
           "format": "short",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:981",
           "format": "short",
           "logBase": 1,
           "show": true
@@ -1971,7 +1943,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum(total_num_requests{method=\"transaction\", name!=\"Action\"} - total_num_failures{method=\"transaction\", name!=\"Action\"}) / sum(total_num_requests{method=\"transaction\", name!=\"Action\"})",
+          "expr": "sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"} - total_num_failures{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) / sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"})",
           "interval": "",
           "legendFormat": "total",
           "range": true,
@@ -1983,7 +1955,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "(total_num_requests{method=\"transaction\", name!=\"Action\"} - total_num_failures{method=\"transaction\", name!=\"Action\"}) / total_num_requests{method=\"transaction\", name!=\"Action\"}",
+          "expr": "(sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) by (method, name) - sum(total_num_failures{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) by (method, name)) / sum(total_num_requests{mode=\"worker\", method=\"transaction\", name!=\"Action\"}) by (method, name)",
           "hide": false,
           "legendFormat": "{{method}}-{{name}}",
           "range": true,
@@ -2006,11 +1978,13 @@
       },
       "yaxes": [
         {
+          "$$hashKey": "object:816",
           "format": "short",
           "logBase": 1,
           "show": true
         },
         {
+          "$$hashKey": "object:817",
           "format": "short",
           "logBase": 1,
           "show": true
@@ -2021,12 +1995,10 @@
       }
     }
   ],
-  "refresh": "10s",
+  "refresh": "30s",
   "schemaVersion": 36,
   "style": "dark",
-  "tags": [
-    "HttpRunner"
-  ],
+  "tags": [],
   "templating": {
     "list": []
   },
@@ -2058,8 +2030,8 @@
     ]
   },
   "timezone": "browser",
-  "title": "HttpRunner for Prometheus",
-  "uid": "0WllLp6mz",
-  "version": 15,
+  "title": "HttpRunner for Distributed Load Testing",
+  "uid": "Qg44NZgVz",
+  "version": 7,
   "weekStart": ""
 }
