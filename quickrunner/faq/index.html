@@ -20,11 +20,11 @@
 <meta property="og:description" content="关于 QuickRunner 的常见问题">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://httprunner.com/quickrunner/faq/"><meta property="article:section" content="QuickRunner">
-<meta property="article:modified_time" content="2022-06-08T19:16:27+08:00">
+<meta property="article:modified_time" content="2022-07-07T18:58:22+08:00">
 <meta itemprop=name content="❓常见问题">
 <meta itemprop=description content="关于 QuickRunner 的常见问题">
-<meta itemprop=dateModified content="2022-06-08T19:16:27+08:00">
-<meta itemprop=wordCount content="17">
+<meta itemprop=dateModified content="2022-07-07T18:58:22+08:00">
+<meta itemprop=wordCount content="32">
 <meta itemprop=keywords content><meta name=twitter:card content="summary">
 <meta name=twitter:title content="❓常见问题">
 <meta name=twitter:description content="关于 QuickRunner 的常见问题">
@@ -185,12 +185,6 @@ Versions
 <aside class="d-none d-xl-block col-xl-2 td-sidebar-toc d-print-none">
 <div class="td-page-meta ml-2 pb-1 pt-2 mb-0">
 </div>
-<div class=td-toc><nav id=TableOfContents>
-<ul>
-<li><a href=#quickrunner-与-httprunner-的关系>QuickRunner 与 HttpRunner 的关系？</a></li>
-<li><a href=#quickrunner-能否部署到无-ui-界面的测试环境中>QuickRunner 能否部署到无 UI 界面的测试环境中？</a></li>
-</ul>
-</nav></div>
 </aside>
 <main class="col-12 col-md-9 col-xl-8 pl-md-5" role=main>
 <nav aria-label=breadcrumb class=td-breadcrumbs>
@@ -208,9 +202,18 @@ Versions
 <div class=lead>关于 QuickRunner 的常见问题</div>
 <header class=article-meta>
 </header>
-<h2 id=quickrunner-与-httprunner-的关系>QuickRunner 与 HttpRunner 的关系？</h2>
-<h2 id=quickrunner-能否部署到无-ui-界面的测试环境中>QuickRunner 能否部署到无 UI 界面的测试环境中？</h2>
-<p>如果您想借助 QuickRunner 去无 UI 界面的测试环境中压测，那么可以通过命令行的方式启动 QuickRunner 中集成的 HttpRunner，压测结束后，HttpRunner 会将压测结果返回。</p>
+<h5 id=问quickrunner-与-httprunner-的关系>问：QuickRunner 与 HttpRunner 的关系？</h5>
+<p>答：quickrunner底层是使用的httprunner，界面更直观，可以通过UI操作生成脚本，操作更方便更简洁</p>
+<h5 id=问quickrunner-能否部署到无-ui-界面的测试环境中>问：QuickRunner 能否部署到无 UI 界面的测试环境中？</h5>
+<p>答：如果您想借助 QuickRunner 去无 UI 界面的测试环境中压测，那么可以通过命令行的方式启动 QuickRunner 中集成的 HttpRunner，压测结束后，HttpRunner 会将压测结果返回。</p>
+<h5 id=问由于某些特殊情况请求体中需要添加和我们的引用参数的产生冲突怎么办>问：由于某些特殊情况，请求体中需要添加"$&ldquo;和我们的引用参数的&rdquo;$&ldquo;产生冲突，怎么办？</h5>
+<p>答：如果body里不需要参数引用，可以将 “ $ ” 替换成“ $$ ”，按照crtl+f可以批量替换。</p>
+<h5 id=问在m1设备上安装应用的时候出现了下图所示的问题怎么解决>问：在M1设备上安装应用的时候出现了下图所示的问题，怎么解决？</h5>
+<img src=/image/QuickRunner/direction/M1.jpg alt=QuickRunner width=800>
+<p>答：这是由于funppy依赖的grpcio库安装时编译导致的问题，m1设备的用户在第一次使用python自定义函数时，需要添加下面两个环境变量后执行：</p>
+<div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-text data-lang=text>export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL=1
+export GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
+</code></pre></div>
 </div>
 </main>
 </div>
