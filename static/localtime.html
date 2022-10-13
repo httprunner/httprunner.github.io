@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+  <title data-react-helmet="true">local-time</title>
+  <meta data-react-helmet="true" charset="UTF-8">
+</head>
+
+<body>
+  <div style="margin-left: 15vw; margin-top: 35vh;">
+    <div id="timestamp" style="font-size: 100px;margin-bottom: 5vh"></div>
+    <div id="date" style="font-size: 100px;"></div>
+  </div>
+</body>
+
+
+<script>
+  const timestampEl = document.getElementById('timestamp');
+  const dateEl = document.getElementById('date');
+
+  function getTimeFormat(now) {
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    const milliseconds = now.getMilliseconds();
+
+    const hoursStr = hours >= 10 ? String(hours) : `0${String(hours)}`;
+    const minutesStr = minutes >= 10 ? String(minutes) : `0${String(minutes)}`;
+    const secondsStr = seconds >= 10 ? String(seconds) : `0${String(seconds)}`;
+    const millisecondsStr = String(milliseconds);
+    return `${hoursStr}:${minutesStr}:${secondsStr}.${millisecondsStr}`;
+  }
+  setInterval(() => {
+    const now = Date.now();
+    timestampEl.innerText = now;
+    dateEl.innerText = getTimeFormat(new Date());
+  }, 1);
+</script>
+
+</html>
