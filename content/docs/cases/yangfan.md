@@ -6,7 +6,7 @@ description: 基于 HttpRunner v4 搭建自动化测试平台
 
 ## 项目介绍
 
-<img src="http://qiniu.yangfan.gd.cn/1680309074log.png" title="扬帆自动化测试平台" width="120">
+<img src="/image/logo/yangfan.png" title="扬帆自动化测试平台" width="120">
 
 扬帆测试平台是一款基于 gin-vue-admin 为框架，以 HttpRunner v4 go 模块（以下简称hrp）为测试引擎搭建的自动化测试平台，致力于打造最易使用的开源测试平台。与大多数测试平台不同，扬帆测试平台采用了 go 语言进行开发，具有良好的性能和稳定性，同时在部署方式和复杂度方面也更加简单，减轻了用户的部署负担。
 
