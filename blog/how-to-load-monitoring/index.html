@@ -51,8 +51,8 @@ Prometheus 的系统架构图如下：
  Server：提供指标汇总、存储、查询能力 Exporter：提供指标采集能力 Data Visualization：提供指标数据可视化能力 Alerting：提供告警能力  如上可知，Prometheus 打通了从指标采集、汇总、存储、查询、可视化、告警链路，实现了完备的监控告警系统。针对 HttpRunner 性能监控场景，本文仅提供最小链路 Server、Exporter、Data Visualization 部分能力的快速上手，Alerting 等功能大家可以根据实际需求进行配置。
 在 Prometheus 系统框架中，HttpRunner 实现了指标采集的能力，其本身就是一个 Exporter。因此，我们仅需要将指标上报至 Prometheus Server 链路打通即可实现性能监控。Prometheus 提供的两种指标收集方式：
  Exporter 会启动一个 http server，将采集的指标以固定的文本格式返回给请求方，Prometheus Server直接拉取； 将指标直接 push 到 Prometheus 提供的数据网关 pushgateway 中，Prometheus Server 再从 pushgateway 中拉取指标数据。  两种方式中，HttpRunner 仅提供第二种方式的支持，即在使用 hrp boom 运行性能测试过程中主动 push 性能测试数据到 Pushgateway 的方式。这样做的原因有如下几点：">
-<link rel=preload href=/scss/main.min.72508565f11adbf499e88edecb53d4af6129666aafbfedda58c1237c75355bae.css as=style>
-<link href=/scss/main.min.72508565f11adbf499e88edecb53d4af6129666aafbfedda58c1237c75355bae.css rel=stylesheet integrity>
+<link rel=preload href=/scss/main.min.1fb21d3395d7c12f9839368ec389d5fc82cda8908ba89e00a29493c184076898.css as=style>
+<link href=/scss/main.min.1fb21d3395d7c12f9839368ec389d5fc82cda8908ba89e00a29493c184076898.css rel=stylesheet integrity>
 <script src=https://code.jquery.com/jquery-3.6.0.min.js integrity=sha384-vtXRMe3mGCbOeY7l30aIg8H9p3GdeSe4IFlP6G8JMa7o7lXvnz3GFKzPxzJdPfGK crossorigin=anonymous></script>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LNRMVFG5LL"></script>
 <script>var doNotTrack=!1;if(!doNotTrack){window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date),gtag('config','G-LNRMVFG5LL',{anonymize_ip:!1})}</script>
