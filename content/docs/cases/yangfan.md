@@ -1,5 +1,5 @@
 ---
-title: 开源项目-杨帆测试平台
+title: 开源项目-扬帆测试平台
 weight: 6
 description: 基于 HttpRunner v4 搭建自动化测试平台
 ---
